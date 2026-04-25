@@ -18,7 +18,6 @@ chmod +x ./$executable
 
 sudo mv ./$executable /usr/local/bin/hitechcloudpanel-agent
 
-# create service
 export HITECHCLOUDPANELAGENT_SERVICE="
 [Unit]
 Description=HitechCloudPanel Agent
@@ -48,6 +47,6 @@ echo "${HITECHCLOUDPANELAGENT_CONFIG}" | sudo tee /etc/hitechcloudpanel-agent/co
 
 sudo systemctl daemon-reload
 sudo systemctl enable hitechcloudpanel-agent
-sudo systemctl start hitechcloudpanel-agent
+sudo systemctl restart hitechcloudpanel-agent
 
 echo "HitechCloudPanel Agent installed successfully"

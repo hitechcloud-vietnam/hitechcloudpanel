@@ -1,6 +1,6 @@
-sudo service hitechcloudpanel-agent stop
+sudo systemctl stop hitechcloudpanel-agent || true
 
-sudo systemctl disable hitechcloudpanel-agent
+sudo systemctl disable hitechcloudpanel-agent || true
 
 sudo rm -f /usr/local/bin/hitechcloudpanel-agent
 
