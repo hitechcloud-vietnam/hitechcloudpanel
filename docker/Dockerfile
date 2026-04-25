@@ -14,7 +14,7 @@ RUN apt-get install -y software-properties-common curl zip unzip gcc nginx redis
   && add-apt-repository ppa:ondrej/php -y \
   && apt-get update \
   && apt-get install -y php8.4 php8.4-fpm php8.4-mbstring php8.4-mcrypt php8.4-gd php8.4-xml \
-  php8.4-curl php8.4-gettext php8.4-zip php8.4-bcmath php8.4-soap php8.4-redis php8.4-sqlite3 php8.4-intl
+    php8.4-curl php8.4-gettext php8.4-zip php8.4-bcmath php8.4-soap php8.4-redis php8.4-sqlite3 php8.4-intl
 
 # php
 COPY docker/php.ini /etc/php/8.4/cli/conf.d/99-hitechcloudpanel.ini

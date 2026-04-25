@@ -4,21 +4,12 @@
   "singleAttributePerLine": false,
   "htmlWhitespaceSensitivity": "css",
   "printWidth": 150,
-  "tailwindFunctions": [
-    "clsx",
-    "cn"
-  ],
+  "tailwindFunctions": ["clsx", "cn"],
   "tabWidth": 2,
-  "plugins": [
-    "prettier-plugin-blade",
-    "prettier-plugin-tailwindcss",
-    "prettier-plugin-sh"
-  ],
+  "plugins": ["prettier-plugin-blade", "prettier-plugin-tailwindcss", "prettier-plugin-sh"],
   "overrides": [
     {
-      "files": [
-        "resources/**/*.blade.php"
-      ],
+      "files": ["resources/**/*.blade.php"],
       "options": {
         "parser": "blade",
         "printWidth": 120,
@@ -29,9 +20,7 @@
       }
     },
     {
-      "files": [
-        "*.sh"
-      ],
+      "files": ["*.sh"],
       "options": {
         "parser": "sh"
       }

@@ -1,7 +1,7 @@
 name: 🐞 HiTechCloud Panel Bug Report
 description: Report a bug or issue in your HiTechCloud Panel instance to help us improve
-title: "[Bug]: "
-labels: ["bug"]
+title: '[Bug]: '
+labels: ['bug']
 assignees: []
 
 body:

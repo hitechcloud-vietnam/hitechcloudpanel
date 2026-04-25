@@ -20,7 +20,8 @@ export default function CommunityPlugins() {
     queryFn: async ({ pageParam }) => {
       const data = (
         await axios.get(
-          'https://api.github.com/search/repositories?q=-owner:hitechcloud-vietnam%20topic:hitechcloudpanel-plugin%20fork:true&per_page=10&page=' + pageParam,
+          'https://api.github.com/search/repositories?q=-owner:hitechcloud-vietnam%20topic:hitechcloudpanel-plugin%20fork:true&per_page=10&page=' +
+            pageParam,
         )
       ).data;
       if (data.items.length == 10) {

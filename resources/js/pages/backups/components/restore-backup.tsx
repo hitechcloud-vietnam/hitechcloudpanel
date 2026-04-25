@@ -36,7 +36,7 @@ export default function RestoreBackup({
   const form = useForm({
     database: '',
     path: '',
-    owner: 'vito:vito',
+    owner: 'hitechcloudpanel:hitechcloudpanel',
     permissions: '755',
   });
 
@@ -103,12 +103,13 @@ export default function RestoreBackup({
                     id="owner"
                     name="owner"
                     type="text"
-                    placeholder="vito:vito"
+                    placeholder="hitechcloudpanel:hitechcloudpanel"
                     value={form.data.owner}
                     onChange={(e) => form.setData('owner', e.target.value)}
                   />
                   <div className="text-muted-foreground mt-1 text-sm">
-                    Default: vito:vito. If using isolated users, change this field. Examples: "user1", "user1:group1", "root:root"
+                    Default: hitechcloudpanel:hitechcloudpanel. If using isolated users, change this field. Examples: "user1", "user1:group1",
+                    "root:root"
                   </div>
                   <InputError message={form.errors.owner} />
                 </FormField>

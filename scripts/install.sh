@@ -53,7 +53,7 @@ mkdir /home/hitechcloudpanel
 mkdir /home/hitechcloudpanel/.ssh
 chown -R hitechcloudpanel:hitechcloudpanel /home/hitechcloudpanel
 chsh -s /bin/bash "hitechcloudpanel"
-su - "hitechcloudpanel" -c "ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa" <<<y
+su - "hitechcloudpanel" -c "ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa" <<< y
 
 # upgrade
 apt clean
@@ -198,7 +198,7 @@ php artisan migrate --force
 php artisan user:create HiTechCloudPanel ${V_ADMIN_EMAIL} ${V_ADMIN_PASSWORD}
 openssl genpkey -algorithm RSA -out /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-private.pem
 chmod 600 /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-private.pem
-ssh-keygen -y -f /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-private.pem >/home/hitechcloudpanel/hitechcloudpanel/storage/ssh-public.key
+ssh-keygen -y -f /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-private.pem > /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-public.key
 chown -R hitechcloudpanel:hitechcloudpanel /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-private.pem
 chown -R hitechcloudpanel:hitechcloudpanel /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-public.key
 

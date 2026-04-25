@@ -23,7 +23,7 @@ fi
 # Check if APP_KEY starts with 'base64:'
 if [[ $APP_KEY == base64:* ]]; then
   # Remove 'base64:' prefix and decode the base64 string
-  decoded_key=$(echo "${APP_KEY:7}" | base64 --decode 2>/dev/null)
+  decoded_key=$(echo "${APP_KEY:7}" | base64 --decode 2> /dev/null)
 
   # Check if decoding was successful
   if [ $? -ne 0 ]; then
@@ -45,7 +45,7 @@ if [ ! -f "$INIT_FLAG" ]; then
   # generate SSH keys
   openssl genpkey -algorithm RSA -out /var/www/html/storage/ssh-private.pem
   chmod 600 /var/www/html/storage/ssh-private.pem
-  ssh-keygen -y -f /var/www/html/storage/ssh-private.pem >/var/www/html/storage/ssh-public.key
+  ssh-keygen -y -f /var/www/html/storage/ssh-private.pem > /var/www/html/storage/ssh-public.key
 
   # create sqlite database
   touch /var/www/html/storage/database.sqlite
@@ -54,8 +54,8 @@ if [ ! -f "$INIT_FLAG" ]; then
   touch "$INIT_FLAG"
 fi
 
-chown -R www-data:www-data /var/www/html &&
-  chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
+chown -R www-data:www-data /var/www/html \
+  && chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
 service php8.4-fpm start
 
 service redis-server start

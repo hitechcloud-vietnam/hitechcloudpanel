@@ -1,6 +1,4 @@
 {
-    "preset": "laravel",
-    "exclude": [
-        "resources/views/ssh"
-    ]
+  "preset": "laravel",
+  "exclude": ["resources/views/ssh"]
 }
