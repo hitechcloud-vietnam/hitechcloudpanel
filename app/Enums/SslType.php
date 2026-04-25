@@ -2,10 +2,10 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 use App\Traits\HasEnumHelpers;
 
-enum SslType: string implements VitoEnum
+enum SslType: string implements HiTechCloudPanelEnum
 {
     use HasEnumHelpers;
 

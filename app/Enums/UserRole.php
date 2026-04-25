@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum UserRole: string implements VitoEnum
+enum UserRole: string implements HiTechCloudPanelEnum
 {
     case USER = 'user';
     case ADMIN = 'admin';

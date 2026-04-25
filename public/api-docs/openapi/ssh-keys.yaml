@@ -99,7 +99,7 @@ paths:
                 user:
                   type: string
                   description: Server user to deploy the key to (must be in server's ssh_users list). Defaults to the server's default SSH user if not provided.
-                  example: 'vito'
+                  example: 'hitechcloudpanel'
       responses:
         '200':
           description: SSH key deployed successfully

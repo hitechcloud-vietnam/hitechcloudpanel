@@ -36,7 +36,7 @@ properties:
     type: string
     nullable: true
     description: Server user the key is deployed to (when loaded via pivot)
-    example: 'vito'
+    example: 'hitechcloudpanel'
   created_at:
     type: string
     format: date-time

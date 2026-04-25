@@ -23,7 +23,7 @@ class GetDatabasesTest extends TestCase
         $databaseHandler = $database->handler();
         $databases = $databaseHandler->getDatabases();
 
-        $this->assertEquals('vito', $databases[0][0]);
+        $this->assertEquals('hitechcloudpanel', $databases[0][0]);
     }
 
     /**
@@ -41,7 +41,7 @@ class GetDatabasesTest extends TestCase
                 information_schema	utf8mb3	utf8mb3_general_ci
                 performance_schema	utf8mb4	utf8mb4_0900_ai_ci
                 sys	utf8mb4	utf8mb4_0900_ai_ci
-                vito	utf8mb3	utf8mb3_general_ci
+                hitechcloudpanel	utf8mb3	utf8mb3_general_ci
                 EOD
             ],
             [
@@ -53,7 +53,7 @@ class GetDatabasesTest extends TestCase
                 information_schema	utf8mb3	utf8mb3_general_ci
                 performance_schema	utf8mb4	utf8mb4_0900_ai_ci
                 sys	utf8mb4	utf8mb4_0900_ai_ci
-                vito	utf8mb3	utf8mb3_general_ci
+                hitechcloudpanel	utf8mb3	utf8mb3_general_ci
                 EOD
             ],
             [
@@ -65,7 +65,7 @@ class GetDatabasesTest extends TestCase
                 mysql	utf8mb4	utf8mb4_uca1400_ai_ci
                 performance_schema	utf8mb3	utf8mb3_general_ci
                 sys	utf8mb3	utf8mb3_general_ci
-                vito	utf8mb3	utf8mb3_general_ci
+                hitechcloudpanel	utf8mb3	utf8mb3_general_ci
                 EOD
             ],
             [
@@ -77,7 +77,7 @@ class GetDatabasesTest extends TestCase
                  postgres      | UTF8    | en_US.UTF-8
                  template1     | UTF8    | en_US.UTF-8
                  template0     | UTF8    | en_US.UTF-8
-                 vito          | UTF8    | en_US.UTF-8
+                 hitechcloudpanel          | UTF8    | en_US.UTF-8
                 (3 rows)
                 EOD
             ],

@@ -41,16 +41,16 @@ class ConsoleController extends Controller
 
         return response()->stream(
             function () use ($server, $request, $ssh, $log, $currentDir): void {
-                $command = 'cd '.$currentDir.' && '.$request->command.' && echo -n "VITO_WORKING_DIR: " && pwd';
+                $command = 'cd '.$currentDir.' && '.$request->command.' && echo -n "HITECHCLOUDPANEL_WORKING_DIR: " && pwd';
                 $output = '';
                 $ssh->exec(command: $command, log: $log, stream: true, streamCallback: function (string $out) use (&$output): void {
-                    echo preg_replace('/^VITO_WORKING_DIR:.*(\r?\n)?/m', '', $out);
+                    echo preg_replace('/^HITECHCLOUDPANEL_WORKING_DIR:.*(\r?\n)?/m', '', $out);
                     $output .= $out;
                     ob_flush();
                     flush();
                 });
                 // extract the working dir and put it in the session
-                if (preg_match('/VITO_WORKING_DIR: (.*)/', $output, $matches)) {
+                if (preg_match('/HITECHCLOUDPANEL_WORKING_DIR: (.*)/', $output, $matches)) {
                     Cache::put('console.'.$server->id.'.dir', $matches[1]);
                 }
             },

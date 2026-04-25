@@ -8,7 +8,7 @@ use App\Services\Database\Mysql;
 use App\Services\Database\Postgresql;
 use App\Services\Firewall\Ufw;
 use App\Services\Monitoring\RemoteMonitor\RemoteMonitor;
-use App\Services\Monitoring\VitoAgent\VitoAgent;
+use App\Services\Monitoring\HiTechCloudPanelAgent\HiTechCloudPanelAgent;
 use App\Services\NodeJS\NodeJS;
 use App\Services\PHP\PHP;
 use App\Services\ProcessManager\Supervisor;
@@ -158,10 +158,10 @@ class ServiceTypeServiceProvider extends ServiceProvider
 
     private function monitoring(): void
     {
-        RegisterServiceType::make(VitoAgent::id())
-            ->type(VitoAgent::type())
-            ->label('VitoAgent')
-            ->handler(VitoAgent::class)
+        RegisterServiceType::make(HiTechCloudPanelAgent::id())
+            ->type(HiTechCloudPanelAgent::type())
+            ->label('HiTechCloudPanelAgent')
+            ->handler(HiTechCloudPanelAgent::class)
             ->register();
 
         RegisterServiceType::make(RemoteMonitor::id())

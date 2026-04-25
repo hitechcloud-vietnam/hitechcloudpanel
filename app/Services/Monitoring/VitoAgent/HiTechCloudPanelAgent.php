@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Monitoring\VitoAgent;
+namespace App\Services\Monitoring\HiTechCloudPanelAgent;
 
 use App\Exceptions\ServiceInstallationFailed;
 use App\Exceptions\SSHError;
@@ -12,15 +12,15 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 
-class VitoAgent extends AbstractService
+class HiTechCloudPanelAgent extends AbstractService
 {
-    const string TAGS_URL = 'https://api.github.com/repos/vitodeploy/agent/tags';
+    const string TAGS_URL = 'https://api.github.com/repos/hitechcloud-vietnam/agent/tags';
 
-    const string DOWNLOAD_URL = 'https://github.com/vitodeploy/agent/releases/download/%s';
+    const string DOWNLOAD_URL = 'https://github.com/hitechcloud-vietnam/agent/releases/download/%s';
 
     public static function id(): string
     {
-        return 'vito-agent';
+        return 'hitechcloudpanel-agent';
     }
 
     public static function type(): string
@@ -30,7 +30,7 @@ class VitoAgent extends AbstractService
 
     public function unit(): string
     {
-        return 'vito-agent';
+        return 'hitechcloudpanel-agent';
     }
 
     public function creationRules(array $input): array
@@ -91,12 +91,12 @@ class VitoAgent extends AbstractService
         $this->service->refresh();
 
         $this->service->server->ssh()->exec(
-            view('ssh.services.monitoring.vito-agent.install', [
+            view('ssh.services.monitoring.hitechcloudpanel-agent.install', [
                 'downloadUrl' => $downloadUrl,
                 'configUrl' => $this->data()['url'],
                 'configSecret' => $this->data()['secret'],
             ]),
-            'install-vito-agent'
+            'install-hitechcloudpanel-agent'
         );
         $status = $this->service->server->systemd()->status($this->unit());
         event('service.installed', $this->service);
@@ -109,8 +109,8 @@ class VitoAgent extends AbstractService
     public function uninstall(): void
     {
         $this->service->server->ssh()->exec(
-            view('ssh.services.monitoring.vito-agent.uninstall'),
-            'uninstall-vito-agent'
+            view('ssh.services.monitoring.hitechcloudpanel-agent.uninstall'),
+            'uninstall-hitechcloudpanel-agent'
         );
         event('service.uninstalled', $this->service);
         Metric::query()->where('server_id', $this->service->server_id)->delete();

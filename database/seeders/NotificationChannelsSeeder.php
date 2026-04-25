@@ -45,7 +45,7 @@ class NotificationChannelsSeeder extends Seeder
             'label' => 'Email',
             'provider' => Email::id(),
             'data' => [
-                'email' => 'email@vitodeploy.com',
+                'email' => 'email@hitechcloud.one',
             ],
             'connected' => 1,
         ]);

@@ -11,7 +11,7 @@ class SourceControlDisconnected extends AbstractNotification
 
     public function rawText(): string
     {
-        return __('Source control [:sourceControl] has been disconnected from Vito', [
+        return __('Source control [:sourceControl] has been disconnected from HiTechCloudPanel', [
             'sourceControl' => $this->sourceControl->profile,
         ]);
     }

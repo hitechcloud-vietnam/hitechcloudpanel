@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum CommandExecutionStatus: string implements VitoEnum
+enum CommandExecutionStatus: string implements HiTechCloudPanelEnum
 {
     case EXECUTING = 'executing';
     case COMPLETED = 'completed';

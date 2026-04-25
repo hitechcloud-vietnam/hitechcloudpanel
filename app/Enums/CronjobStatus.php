@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum CronjobStatus: string implements VitoEnum
+enum CronjobStatus: string implements HiTechCloudPanelEnum
 {
     case CREATING = 'creating';
     case READY = 'ready';

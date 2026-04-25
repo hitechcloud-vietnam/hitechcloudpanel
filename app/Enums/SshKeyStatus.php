@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum SshKeyStatus: string implements VitoEnum
+enum SshKeyStatus: string implements HiTechCloudPanelEnum
 {
     case ADDING = 'adding';
     case ADDED = 'added';

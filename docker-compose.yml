@@ -5,7 +5,7 @@ services:
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: vito/app
+        image: hitechcloudpanel/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -20,15 +20,15 @@ services:
         volumes:
             - '.:/var/www/html'
         networks:
-            - vito
+            - hitechcloudpanel
         depends_on:
             - redis
     redis:
         image: 'redis:alpine'
         volumes:
-            - 'vito-redis:/data'
+            - 'hitechcloudpanel-redis:/data'
         networks:
-            - vito
+            - hitechcloudpanel
         healthcheck:
             test: [ "CMD", "redis-cli", "ping" ]
             retries: 3
@@ -39,7 +39,7 @@ services:
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: vito/app
+        image: hitechcloudpanel/app
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
@@ -51,14 +51,14 @@ services:
         volumes:
             - '.:/var/www/html'
         networks:
-            - vito
+            - hitechcloudpanel
         depends_on:
             - app
             - redis
 networks:
-    vito:
+    hitechcloudpanel:
         driver: bridge
 volumes:
-    vito-redis:
+    hitechcloudpanel-redis:
         driver: local
-        name: vito-redis
+        name: hitechcloudpanel-redis

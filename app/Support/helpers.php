@@ -38,7 +38,7 @@ function date_with_timezone(mixed $date, string $timezone): string
     return $dt->format('Y-m-d H:i:s');
 }
 
-function show_vito_version(): string
+function show_hitechcloudpanel_version(): string
 {
     $version = config('app.version');
 

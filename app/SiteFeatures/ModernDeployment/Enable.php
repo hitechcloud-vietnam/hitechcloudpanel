@@ -34,7 +34,7 @@ class Enable extends Action
             DynamicField::make('alert-2')
                 ->alert()
                 ->options(['type' => 'warning'])
-                ->link('Documentation', 'https://vitodeploy.com/docs/sites/modern-deployment')
+                ->link('Documentation', 'https://docs.panel.hitechcloud.com/docs/sites/modern-deployment')
                 ->description("Read the documentation first to see how Modern Deployment works. Enabling Modern Deployment will change your site's path."),
             DynamicField::make('alert-3')
                 ->alert()

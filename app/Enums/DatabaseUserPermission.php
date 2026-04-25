@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum DatabaseUserPermission: string implements VitoEnum
+enum DatabaseUserPermission: string implements HiTechCloudPanelEnum
 {
     case READ = 'read';
     case WRITE = 'write';

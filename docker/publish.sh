@@ -33,16 +33,16 @@ if [ ${#TAGS[@]} -eq 0 ]; then
 fi
 
 # Clone the specified branch of the repo
-rm -rf /tmp/vito
-git clone --branch "$BRANCH" --depth 1 git@github.com:vitodeploy/vito.git /tmp/vito
-cd /tmp/vito || exit
+rm -rf /tmp/hitechcloudpanel
+git clone --branch "$BRANCH" --depth 1 git@github.com:hitechcloud-vietnam/hitechcloudpanel.git /tmp/hitechcloudpanel
+cd /tmp/hitechcloudpanel || exit
 
 # Prepare tag arguments for docker buildx
 TAG_ARGS=()
 for TAG in "${TAGS[@]}"; do
     # Trim whitespace to avoid invalid tag formatting
     TAG_CLEANED=$(echo -n "$TAG" | xargs)
-    TAG_ARGS+=("-t" "vitodeploy/vito:$TAG_CLEANED")
+    TAG_ARGS+=("-t" "hitechcloud-vietnam/hitechcloudpanel:$TAG_CLEANED")
 done
 
 # Build and push the image

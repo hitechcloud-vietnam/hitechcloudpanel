@@ -19,7 +19,7 @@ abstract class CreateSite extends AbstractWorkflowAction
                 'alias-2',
                 'send this field empty [] if you do not want to set any aliases',
             ],
-            'user' => 'Isolated user, remove this field to use the default user (vito)',
+            'user' => 'Isolated user, remove this field to use the default user (hitechcloudpanel)',
         ];
     }
 

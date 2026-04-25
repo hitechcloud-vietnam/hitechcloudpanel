@@ -29,16 +29,16 @@ class SyncCronJobs
         // Get existing cronjobs from server for this user
         $crontabOutput = $this->getUserCrontab($server, $user);
 
-        // Get all Vito-managed cronjobs for this user (including both server-level and site-level)
-        $vitoCronJobs = $server->cronJobs()
+        // Get all HiTechCloudPanel-managed cronjobs for this user (including both server-level and site-level)
+        $hitechcloudpanelCronJobs = $server->cronJobs()
             ->where('user', $user)
             ->get();
 
         // Filter only server-level cronjobs (site_id = null) for status updates
-        $serverLevelCronJobs = $vitoCronJobs->where('site_id', null);
+        $serverLevelCronJobs = $hitechcloudpanelCronJobs->where('site_id', null);
 
         if (empty($crontabOutput)) {
-            // If crontab is empty, mark all server-level Vito cronjobs as disabled
+            // If crontab is empty, mark all server-level HiTechCloudPanel cronjobs as disabled
             foreach ($serverLevelCronJobs as $cronJob) {
                 if ($cronJob->status === CronjobStatus::READY) {
                     $cronJob->update(['status' => CronjobStatus::DISABLED]);
@@ -97,8 +97,8 @@ class SyncCronJobs
                 'commented' => $isCommented,
             ];
 
-            // Check if this matches any Vito-managed cronjob (including site-level ones)
-            $matchingCronJob = $vitoCronJobs->first(function ($cronJob) use ($frequency, $command) {
+            // Check if this matches any HiTechCloudPanel-managed cronjob (including site-level ones)
+            $matchingCronJob = $hitechcloudpanelCronJobs->first(function ($cronJob) use ($frequency, $command) {
                 return $this->normalizeFrequency($cronJob->frequency) === $frequency && $this->normalizeCommand($cronJob->command) === $command;
             });
 
@@ -116,20 +116,20 @@ class SyncCronJobs
             }
         }
 
-        // Mark server-level Vito cronjobs that are no longer on the server as disabled
+        // Mark server-level HiTechCloudPanel cronjobs that are no longer on the server as disabled
         foreach ($serverLevelCronJobs as $cronJob) {
             if (! in_array($cronJob->id, $foundCronJobs) && $cronJob->status === CronjobStatus::READY) {
                 $cronJob->update(['status' => CronjobStatus::DISABLED]);
             }
         }
 
-        // Create new cronjobs for manually created ones (not in Vito)
+        // Create new cronjobs for manually created ones (not in HiTechCloudPanel)
         foreach ($serverCronJobs as $cronJobData) {
-            $isVitoManaged = $vitoCronJobs->contains(function ($cronJob) use ($cronJobData) {
+            $isHiTechCloudPanelManaged = $hitechcloudpanelCronJobs->contains(function ($cronJob) use ($cronJobData) {
                 return $this->normalizeFrequency($cronJob->frequency) === $cronJobData['frequency'] && $this->normalizeCommand($cronJob->command) === $cronJobData['command'];
             });
 
-            if (! $isVitoManaged) {
+            if (! $isHiTechCloudPanelManaged) {
                 $server->cronJobs()->create([
                     'site_id' => null, // Server-level cronjob
                     'user' => $user,

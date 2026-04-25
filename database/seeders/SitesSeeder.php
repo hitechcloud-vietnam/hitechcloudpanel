@@ -32,7 +32,7 @@ class SitesSeeder extends Seeder
                 'domain' => $server->project->name.'.com',
                 'source_control_id' => $sourceControls->random()->id,
                 'type' => Laravel::id(),
-                'path' => '/home/vito/'.$server->project->name.'.com',
+                'path' => '/home/hitechcloudpanel/'.$server->project->name.'.com',
                 'aliases' => ['www.'.$server->project->name.'.com'],
             ]);
             Worker::factory()->create([

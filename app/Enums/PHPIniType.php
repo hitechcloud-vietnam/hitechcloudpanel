@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum PHPIniType: string implements VitoEnum
+enum PHPIniType: string implements HiTechCloudPanelEnum
 {
     case CLI = 'cli';
     case FPM = 'fpm';

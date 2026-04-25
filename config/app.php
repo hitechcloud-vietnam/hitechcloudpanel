@@ -50,7 +50,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Vito'),
+    'name' => env('APP_NAME', 'HiTechCloudPanel'),
 
     /*
     |--------------------------------------------------------------------------

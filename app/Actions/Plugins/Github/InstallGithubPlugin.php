@@ -50,7 +50,7 @@ final readonly class InstallGithubPlugin
         }
 
         $folder = implode(DIRECTORY_SEPARATOR, [$psrUser, $psrRepo]);
-        $pluginsFolder = implode(DIRECTORY_SEPARATOR, ['Vito', 'Plugins', $folder]);
+        $pluginsFolder = implode(DIRECTORY_SEPARATOR, ['HiTechCloudPanel', 'Plugins', $folder]);
         $zipFile = implode(DIRECTORY_SEPARATOR, ['app', 'temp', "$repo.zip"]);
 
         $zipLocation = storage_path($zipFile);
@@ -69,7 +69,7 @@ final readonly class InstallGithubPlugin
                     'username' => $username,
                     'folder' => $folder,
                     'version' => $release->tagName,
-                    'namespace' => "App\\Vito\\Plugins\\$psrUser\\$psrRepo\\Plugin",
+                    'namespace' => "App\\HiTechCloudPanel\\Plugins\\$psrUser\\$psrRepo\\Plugin",
                     'is_installed' => false,
                     'is_enabled' => false,
                     'name' => null,

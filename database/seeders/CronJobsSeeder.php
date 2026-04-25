@@ -15,7 +15,7 @@ class CronJobsSeeder extends Seeder
         foreach ($servers as $server) {
             CronJob::factory()->create([
                 'server_id' => $server->id,
-                'command' => 'php /home/vito/'.$server->project->name.'.com/artisan schedule:run',
+                'command' => 'php /home/hitechcloudpanel/'.$server->project->name.'.com/artisan schedule:run',
             ]);
         }
     }

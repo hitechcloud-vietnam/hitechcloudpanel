@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum BackupFileStatus: string implements VitoEnum
+enum BackupFileStatus: string implements HiTechCloudPanelEnum
 {
     case CREATED = 'created';
     case CREATING = 'creating';

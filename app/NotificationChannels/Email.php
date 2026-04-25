@@ -44,8 +44,8 @@ class Email extends AbstractNotificationChannel
         try {
             Mail::to($this->data()['email'])->send(
                 new NotificationMail(
-                    'Connected to VitoDeploy',
-                    'This email confirms that you have connected your email to VitoDeploy.'
+                    'Connected to HiTechCloudPanel',
+                    'This email confirms that you have connected your email to HiTechCloudPanel.'
                 )
             );
         } catch (Throwable) {

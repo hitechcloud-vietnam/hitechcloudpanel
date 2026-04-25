@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum SiteStatus: string implements VitoEnum
+enum SiteStatus: string implements HiTechCloudPanelEnum
 {
     case READY = 'ready';
     case INSTALLING = 'installing';

@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum RedirectStatus: string implements VitoEnum
+enum RedirectStatus: string implements HiTechCloudPanelEnum
 {
     case CREATING = 'creating';
     case READY = 'ready';

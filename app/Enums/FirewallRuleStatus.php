@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum FirewallRuleStatus: string implements VitoEnum
+enum FirewallRuleStatus: string implements HiTechCloudPanelEnum
 {
     case CREATING = 'creating';
     case UPDATING = 'updating';

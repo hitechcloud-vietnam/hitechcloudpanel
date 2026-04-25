@@ -23,7 +23,7 @@ class GetUsersTest extends TestCase
         $databaseHandler = $database->handler();
         $users = $databaseHandler->getUsers();
 
-        $this->assertEquals('vito', $users[0][0]);
+        $this->assertEquals('hitechcloudpanel', $users[0][0]);
     }
 
     /**
@@ -37,7 +37,7 @@ class GetUsersTest extends TestCase
                 '8.0',
                 <<<'EOD'
                 User	Host	Privileges
-                vito	localhost	mydb,testdb
+                hitechcloudpanel	localhost	mydb,testdb
                 mysql.infoschema	localhost	NULL
                 mysql.session	localhost	performance_schema
                 mysql.sys	localhost	sys
@@ -49,7 +49,7 @@ class GetUsersTest extends TestCase
                 '5.7',
                 <<<'EOD'
                 User	Host	Privileges
-                vito	localhost	mydb,testdb
+                hitechcloudpanel	localhost	mydb,testdb
                 mysql.infoschema	localhost	NULL
                 mysql.session	localhost	performance_schema
                 mysql.sys	localhost	sys
@@ -64,7 +64,7 @@ class GetUsersTest extends TestCase
                 mariadb.sys	localhost	NULL
                 mysql	localhost	NULL
                 root	localhost	NULL
-                vito	localhost	NULL
+                hitechcloudpanel	localhost	NULL
                 EOD
             ],
             [
@@ -73,8 +73,8 @@ class GetUsersTest extends TestCase
                 <<<'EOD'
                  username | host |                databases
                 ----------+------+------------------------------------------
-                 postgres |      | template1,template0,postgres,test,vitodb
-                 vito     |      | template1,template0,postgres,test,vitodb
+                 postgres |      | template1,template0,postgres,test,hitechcloudpaneldb
+                 hitechcloudpanel     |      | template1,template0,postgres,test,hitechcloudpaneldb
                 (2 rows)
                 EOD
             ],

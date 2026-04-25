@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum OperatingSystem: string implements VitoEnum
+enum OperatingSystem: string implements HiTechCloudPanelEnum
 {
     case UBUNTU18 = 'ubuntu_18';
     case UBUNTU20 = 'ubuntu_20';

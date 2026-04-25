@@ -172,7 +172,7 @@ class SSH
             if ($this->asUser !== null && $this->asUser !== '' && $this->asUser !== '0') {
                 $command = <<<BASH
                 sudo -u {$this->asUser} bash <<'EOF'
-                cd ~ || { echo 'VITO_SSH_ERROR: failed to cd to home directory' >&2; exit 1; }
+                cd ~ || { echo 'HITECHCLOUDPANEL_SSH_ERROR: failed to cd to home directory' >&2; exit 1; }
                 {$command}
                 EOF
                 BASH;
@@ -195,7 +195,7 @@ class SSH
 
                 $output .= $out;
             });
-            if ($this->connection->getExitStatus() !== 0 || Str::contains($output, 'VITO_SSH_ERROR')) {
+            if ($this->connection->getExitStatus() !== 0 || Str::contains($output, 'HITECHCLOUDPANEL_SSH_ERROR')) {
                 throw new SSHCommandError(
                     message: 'SSH command failed with an error',
                     log: $this->log
@@ -264,7 +264,8 @@ class SSH
             $this->asUser($owner)->exec('cat '.$tmpRemotePath.' > '.$remotePath);
         } catch (Throwable $e) {
             throw new SSHCommandError(
-                message: $e->getMessage()
+                message: $e->getMessage(),
+                log: $this->log
             );
         } finally {
             if (Storage::disk('local')->exists($tmpName)) {

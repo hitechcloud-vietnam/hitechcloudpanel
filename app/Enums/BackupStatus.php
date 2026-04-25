@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum BackupStatus: string implements VitoEnum
+enum BackupStatus: string implements HiTechCloudPanelEnum
 {
     case RUNNING = 'running';
     case FAILED = 'failed';

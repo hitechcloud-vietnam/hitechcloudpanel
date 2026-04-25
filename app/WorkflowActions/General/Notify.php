@@ -15,7 +15,7 @@ class Notify extends AbstractWorkflowAction
     {
         return [
             'notification_channel_id' => 'The ID of the notification channel to send the notification to',
-            'email' => 'The email address of the user on Vito',
+            'email' => 'The email address of the user on HiTechCloudPanel to send the notification to',
             'message' => 'The message to send',
         ];
     }

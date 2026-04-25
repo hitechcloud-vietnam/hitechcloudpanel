@@ -2,7 +2,7 @@
 
 namespace App\Contracts;
 
-interface VitoEnum
+interface HiTechCloudPanelEnum
 {
     public function getColor(): string;
 

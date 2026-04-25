@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum DeploymentStatus: string implements VitoEnum
+enum DeploymentStatus: string implements HiTechCloudPanelEnum
 {
     case DEPLOYING = 'deploying';
     case FINISHED = 'finished';

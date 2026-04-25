@@ -99,9 +99,9 @@ class ApiDocsController extends Controller
         $combinedApi = [
             'openapi' => '3.0.0',
             'info' => [
-                'title' => 'VitoDeploy API',
+                'title' => 'HiTechCloudPanel API',
                 'version' => '1.0.0',
-                'description' => 'Complete API documentation for VitoDeploy - Free and Self-Hosted server management tool',
+                'description' => 'Complete API documentation for HiTechCloudPanel - Free and Self-Hosted server management tool',
             ],
             'servers' => [
                 [

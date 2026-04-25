@@ -18,7 +18,7 @@ class WorkerFactory extends Factory
         return [
             'name' => $this->faker->name,
             'command' => 'php artisan queue:work',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 1,

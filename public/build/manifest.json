@@ -1138,9 +1138,9 @@
       "resources/js/pages/users/components/user-form.tsx",
       "resources/js/pages/users/components/user-select.tsx",
       "resources/js/pages/users/index.tsx",
-      "resources/js/pages/vito-settings/components/export.tsx",
-      "resources/js/pages/vito-settings/components/import.tsx",
-      "resources/js/pages/vito-settings/index.tsx",
+      "resources/js/pages/hitechcloudpanel-settings/components/export.tsx",
+      "resources/js/pages/hitechcloudpanel-settings/components/import.tsx",
+      "resources/js/pages/hitechcloudpanel-settings/index.tsx",
       "resources/js/pages/workers/components/columns.tsx",
       "resources/js/pages/workers/components/form.tsx",
       "resources/js/pages/workers/index.tsx",
@@ -11354,10 +11354,10 @@
       "assets/app-C57e2cy7.css"
     ]
   },
-  "resources/js/pages/vito-settings/components/export.tsx": {
+  "resources/js/pages/hitechcloudpanel-settings/components/export.tsx": {
     "file": "assets/export-Bwc5dGV0.js",
     "name": "export",
-    "src": "resources/js/pages/vito-settings/components/export.tsx",
+    "src": "resources/js/pages/hitechcloudpanel-settings/components/export.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.tsx",
@@ -11371,10 +11371,10 @@
       "assets/app-C57e2cy7.css"
     ]
   },
-  "resources/js/pages/vito-settings/components/import.tsx": {
+  "resources/js/pages/hitechcloudpanel-settings/components/import.tsx": {
     "file": "assets/import-BmsB1ncD.js",
     "name": "import",
-    "src": "resources/js/pages/vito-settings/components/import.tsx",
+    "src": "resources/js/pages/hitechcloudpanel-settings/components/import.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.tsx",
@@ -11400,10 +11400,10 @@
       "assets/app-C57e2cy7.css"
     ]
   },
-  "resources/js/pages/vito-settings/index.tsx": {
+  "resources/js/pages/hitechcloudpanel-settings/index.tsx": {
     "file": "assets/index-CHeWCE1v.js",
     "name": "index",
-    "src": "resources/js/pages/vito-settings/index.tsx",
+    "src": "resources/js/pages/hitechcloudpanel-settings/index.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.tsx",
@@ -11412,8 +11412,8 @@
       "_heading-ykH_d0Gr.js",
       "_card-V7OSHIms.js",
       "_separator-Bki_j3SI.js",
-      "resources/js/pages/vito-settings/components/export.tsx",
-      "resources/js/pages/vito-settings/components/import.tsx",
+      "resources/js/pages/hitechcloudpanel-settings/components/export.tsx",
+      "resources/js/pages/hitechcloudpanel-settings/components/import.tsx",
       "_layout-CjOU9EJH.js",
       "_dropdown-menu-KyWuVDJE.js",
       "_index-BWqjwO-c.js",

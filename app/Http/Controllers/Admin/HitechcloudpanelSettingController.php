@@ -19,9 +19,9 @@ use Spatie\RouteAttributes\Attributes\Prefix;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use ZipArchive;
 
-#[Prefix('admin/vito')]
+#[Prefix('admin/hitechcloudpanel')]
 #[Middleware(['auth', 'must-be-admin'])]
-class VitoSettingController extends Controller
+class HitechcloudpanelSettingController extends Controller
 {
     /**
      * @var array<string, string>
@@ -35,19 +35,19 @@ class VitoSettingController extends Controller
         'storage/app/server-logs' => 'directory',
     ];
 
-    #[Get('/', name: 'vito-settings')]
+    #[Get('/', name: 'hitechcloudpanel-settings')]
     public function index(): Response
     {
-        return Inertia::render('vito-settings/index');
+        return Inertia::render('hitechcloudpanel-settings/index');
     }
 
     /**
      * @throws Exception
      */
-    #[Get('/export', name: 'vito-settings.export')]
+    #[Get('/export', name: 'hitechcloudpanel-settings.export')]
     public function downloadExport(): BinaryFileResponse
     {
-        $exportName = 'vito-backup-'.date('Y-m-d').'.zip';
+        $exportName = 'hitechcloudpanel-backup-'.date('Y-m-d').'.zip';
         $export = $this->export($exportName);
 
         return response()->download($export, $exportName)->deleteFileAfterSend();
@@ -83,7 +83,7 @@ class VitoSettingController extends Controller
      * @throws ValidationException
      * @throws Exception
      */
-    #[Post('/import', name: 'vito-settings.import')]
+    #[Post('/import', name: 'hitechcloudpanel-settings.import')]
     public function import(Request $request): RedirectResponse
     {
         if (config('app.demo')) {
@@ -98,7 +98,7 @@ class VitoSettingController extends Controller
         ]);
 
         $uploadedFile = $request->file('backup_file');
-        $extractName = 'vito-backup-import-'.time();
+        $extractName = 'hitechcloudpanel-backup-import-'.time();
         $extractPath = Storage::disk('tmp')->path($extractName);
 
         // Create extraction directory
@@ -129,7 +129,7 @@ class VitoSettingController extends Controller
 
         Artisan::call('optimize');
 
-        return redirect()->route('vito-settings')
+        return redirect()->route('hitechcloudpanel-settings')
             ->with('success', 'Settings imported successfully.');
     }
 

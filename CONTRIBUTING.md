@@ -2,4 +2,4 @@
 
 Please read the contribution guide on the website
 
-https://vitodeploy.com/prologue/contribution-guide.html
+https://docs.panel.hitechcloud.one/prologue/contribution-guide.html

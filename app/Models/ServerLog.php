@@ -128,8 +128,8 @@ class ServerLog extends AbstractModel
 
     public function write(string $buf): void
     {
-        if (Str::contains($buf, 'VITO_SSH_ERROR')) {
-            $buf = str_replace('VITO_SSH_ERROR', '', $buf);
+        if (Str::contains($buf, 'HITECHCLOUDPANEL_SSH_ERROR')) {
+            $buf = str_replace('HITECHCLOUDPANEL_SSH_ERROR', '', $buf);
         }
         if (Storage::disk($this->disk)->exists($this->name)) {
             Storage::disk($this->disk)->append($this->name, $buf);

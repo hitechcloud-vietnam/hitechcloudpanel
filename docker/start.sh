@@ -1,8 +1,8 @@
 #!/bin/bash
 
 INIT_FLAG="/var/www/html/storage/.INIT_ENV"
-NAME=${NAME:-"vito"}
-EMAIL=${EMAIL:-"vito@vitodeploy.com"}
+NAME=${NAME:-"hitechcloudpanel"}
+EMAIL=${EMAIL:-"hitechcloudpanel@hitechcloud.one"}
 PASSWORD=${PASSWORD:-"password"}
 
 # Function to check if a string is 32 characters long
@@ -69,6 +69,6 @@ php /var/www/html/artisan user:create "$NAME" "$EMAIL" "$PASSWORD"
 
 cron
 
-echo "Vito is running! 🚀"
+echo "HitechCloudPanel is running! 🚀"
 
 /usr/bin/supervisord

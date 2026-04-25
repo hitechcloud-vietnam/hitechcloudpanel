@@ -1,11 +1,11 @@
 services:
-    vito:
+    hitechcloudpanel:
         build:
             context: ../
             dockerfile: docker/Dockerfile
         environment:
-            NAME: "vito"
-            EMAIL: "vito@example.com"
+            NAME: "hitechcloudpanel"
+            EMAIL: "hitechcloudpanel@example.com"
             PASSWORD: "password"
             APP_KEY: "base64:UodiJrx3DkcMlizmoimNlDn+yd4q5f2VbkBay19rJwM="
             APP_PORT: 8000
@@ -16,7 +16,7 @@ services:
             - '${APP_PORT:-8000}:80'
             - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         volumes:
-            - "vito-storage:/var/www/html/storage"
+            - "hitechcloudpanel-storage:/var/www/html/storage"
 volumes:
-    vito-storage:
+    hitechcloudpanel-storage:
         driver: local

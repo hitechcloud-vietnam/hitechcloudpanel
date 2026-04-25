@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-use App\Contracts\VitoEnum;
+use App\Contracts\HiTechCloudPanelEnum;
 
-enum BackupType: string implements VitoEnum
+enum BackupType: string implements HiTechCloudPanelEnum
 {
     case DATABASE = 'database';
     case FILE = 'file';

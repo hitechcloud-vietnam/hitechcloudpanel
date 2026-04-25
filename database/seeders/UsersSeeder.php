@@ -12,7 +12,7 @@ class UsersSeeder extends Seeder
         /** @var User $user */
         $user = User::factory()->create([
             'name' => 'Demo User',
-            'email' => 'demo@vitodeploy.com',
+            'email' => 'demo@hitechcloud.one',
         ]);
 
         $user->ensureHasDefaultProject();
