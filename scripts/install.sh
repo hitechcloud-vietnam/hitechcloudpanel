@@ -38,11 +38,11 @@ normalize_app_url() {
   fi
 }
 
-if [[ -z "${V_PASSWORD}" ]]; then
+if [[ -z "${V_PASSWORD:-}" ]]; then
   export V_PASSWORD=$(openssl rand -base64 12)
 fi
 
-if [[ -z "${HITECHCLOUDPANEL_APP_URL}" ]]; then
+if [[ -z "${HITECHCLOUDPANEL_APP_URL:-}" ]]; then
   export DEFAULT_HITECHCLOUDPANEL_APP_URL=http://$(curl -s https://free.freeipapi.com -4)
   read -p "Enter the APP_URL [$DEFAULT_HITECHCLOUDPANEL_APP_URL]: " HITECHCLOUDPANEL_APP_URL
   export HITECHCLOUDPANEL_APP_URL=${HITECHCLOUDPANEL_APP_URL:-$DEFAULT_HITECHCLOUDPANEL_APP_URL}
@@ -54,20 +54,20 @@ if [[ -n "${HITECHCLOUDPANEL_APP_URL:-}" ]]; then
   export HITECHCLOUDPANEL_APP_URL=$(normalize_app_url "$HITECHCLOUDPANEL_APP_URL")
 fi
 
-if [[ -z "${V_ADMIN_EMAIL}" ]]; then
+if [[ -z "${V_ADMIN_EMAIL:-}" ]]; then
   read -p "Enter admin's email address: " V_ADMIN_EMAIL
 fi
 
-if [[ -z "${V_ADMIN_EMAIL}" ]]; then
+if [[ -z "${V_ADMIN_EMAIL:-}" ]]; then
   echo "Error: V_ADMIN_EMAIL environment variable is not set."
   exit 1
 fi
 
-if [[ -z "${V_ADMIN_PASSWORD}" ]]; then
+if [[ -z "${V_ADMIN_PASSWORD:-}" ]]; then
   read -p "Enter a password for the admin user: " V_ADMIN_PASSWORD
 fi
 
-if [[ -z "${V_ADMIN_PASSWORD}" ]]; then
+if [[ -z "${V_ADMIN_PASSWORD:-}" ]]; then
   echo "Error: V_ADMIN_PASSWORD environment variable is not set."
   exit 1
 fi
