@@ -11,7 +11,7 @@ echo "
                                  |_|            |___/
 "
 
-export HITECHCLOUDPANEL_VERSION="3.x"
+export HITECHCLOUDPANEL_VERSION="main"
 export DEBIAN_FRONTEND=noninteractive
 export NEEDRESTART_MODE=a
 
