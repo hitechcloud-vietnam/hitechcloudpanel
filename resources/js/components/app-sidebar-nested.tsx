@@ -225,12 +225,12 @@ export function AppSidebar() {
   const footerNavItems: NavItem[] = [
     {
       title: 'Repository',
-      href: 'https://github.com/vitodeploy/vito',
+      href: 'https://github.com/hitechcloud-vietnam/hitechcloudpanel',
       icon: Folder,
     },
     {
       title: 'Documentation',
-      href: 'https://vitodeploy.com',
+      href: 'https://docs.panel.hitechcloud.one',
       icon: BookOpen,
     },
   ];

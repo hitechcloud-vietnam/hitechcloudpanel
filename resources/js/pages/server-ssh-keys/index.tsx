@@ -25,7 +25,7 @@ export default function SshKeys() {
         <HeaderContainer>
           <Heading title="SSH Keys" description="Here you can manage the ssh keys deployed to the server" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/servers/ssh-keys" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/servers/ssh-keys" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

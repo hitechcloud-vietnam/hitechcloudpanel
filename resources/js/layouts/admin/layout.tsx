@@ -2,7 +2,7 @@ import { type BreadcrumbItem, type NavItem } from '@/types';
 import { PlugIcon, UsersIcon } from 'lucide-react';
 import { ReactNode } from 'react';
 import Layout from '@/layouts/app/layout';
-import VitoIcon from '@/icons/vito';
+import HiTechCloudPanelIcon from '@/icons/hitechcloudpanel';
 
 const sidebarNavItems: NavItem[] = [
   {
@@ -16,9 +16,9 @@ const sidebarNavItems: NavItem[] = [
     icon: PlugIcon,
   },
   {
-    title: 'Vito Settings',
-    href: route('vito-settings'),
-    icon: VitoIcon,
+    title: 'HiTechCloudPanel Settings',
+    href: route('hitechcloudpanel-settings'),
+    icon: HiTechCloudPanelIcon,
   },
 ];
 

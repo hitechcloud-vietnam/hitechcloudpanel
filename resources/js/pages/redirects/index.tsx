@@ -28,7 +28,7 @@ export default function Redirects() {
         <HeaderContainer>
           <Heading title="Redirect" description="Here you can Redirect certificates" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/sites/redirects" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/sites/redirects" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

@@ -27,9 +27,9 @@ export default function SyncDatabases({ server }: { server: Server }) {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Sync Databases</DialogTitle>
-          <DialogDescription className="sr-only">Sync databases from the server to Vito.</DialogDescription>
+          <DialogDescription className="sr-only">Sync databases from the server to HiTechCloudPanel.</DialogDescription>
         </DialogHeader>
-        <p className="p-4">Are you sure you want to sync the databases from the server to Vito?</p>
+        <p className="p-4">Are you sure you want to sync the databases from the server to HiTechCloudPanel?</p>
         <DialogFooter>
           <DialogTrigger asChild>
             <Button variant="outline">Cancel</Button>

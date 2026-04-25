@@ -30,7 +30,7 @@ export default function Show() {
             description={`You're viewing ${page.props.metric}'s metrics`}
           />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/servers/monitoring" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/servers/monitoring" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

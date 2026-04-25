@@ -24,7 +24,7 @@ export default function DNSProviders() {
         <div className="flex items-start justify-between">
           <Heading title="DNS Providers" description="Here you can manage all of the DNS provider connections" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/settings/dns-providers" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/settings/dns-providers" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

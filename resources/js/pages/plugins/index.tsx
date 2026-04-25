@@ -29,7 +29,7 @@ export default function Plugins() {
         <div className="flex items-start justify-between">
           <Heading title="Plugins" description="Here you can install/uninstall plugins" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/plugins" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/plugins" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>
@@ -73,7 +73,7 @@ export default function Plugins() {
             <Card>
               <CardHeader>
                 <CardTitle>Official plugins</CardTitle>
-                <CardDescription>These plugins are developed and maintained by VitoDeploy's team</CardDescription>
+                <CardDescription>These plugins are developed and maintained by the HiTechCloudPanel team</CardDescription>
               </CardHeader>
               <CardContent>
                 <OfficialPlugins />

@@ -28,13 +28,13 @@ export default function SiteFeatures() {
 
       <Container className="max-w-5xl">
         <HeaderContainer>
-          <Heading title="Features" description="Your site has some features enabled by Vito or other plugins" />
+          <Heading title="Features" description="Your site has some features enabled by HiTechCloudPanel or other plugins" />
         </HeaderContainer>
 
         <Alert>
           <TriangleAlertIcon className="text-warning!" />
           <AlertDescription className="flex gap-1">
-            Vito now uses the new plugins system. If the feature you're looking for is not here, check the
+            HiTechCloudPanel now uses the new plugins system. If the feature you're looking for is not here, check the
             <Link className="text-primary" href={route('plugins')}>
               plugins
             </Link>

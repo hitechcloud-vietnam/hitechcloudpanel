@@ -24,7 +24,7 @@ export default function Domains() {
         <div className="flex items-start justify-between">
           <Heading title="Domains" description="All of the domains of your project listed here" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/domains" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/domains" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

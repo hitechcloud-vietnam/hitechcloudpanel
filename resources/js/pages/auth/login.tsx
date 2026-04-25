@@ -19,7 +19,7 @@ export default function Login() {
     password: string;
     remember: boolean;
   }>({
-    email: page.props.demo ? 'demo@vitodeploy.com' : '',
+    email: page.props.demo ? 'demo@hitechcloudpanel.com' : '',
     password: page.props.demo ? 'password' : '',
     remember: false,
   });

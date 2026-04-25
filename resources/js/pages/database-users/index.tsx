@@ -29,7 +29,7 @@ export default function Databases() {
         <HeaderContainer>
           <Heading title="Users" description="Here you can manage the database users and their permissions" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/servers/database" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/servers/database" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

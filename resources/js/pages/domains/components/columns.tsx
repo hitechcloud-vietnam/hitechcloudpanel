@@ -41,13 +41,13 @@ function Remove({ domain }: { domain: Domain }) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Remove {domain.domain}</DialogTitle>
-          <DialogDescription className="sr-only">Remove domain from Vito</DialogDescription>
+          <DialogDescription className="sr-only">Remove domain from HiTechCloudPanel</DialogDescription>
         </DialogHeader>
         <div className="space-y-2 p-4">
           <p>
-            Are you sure you want to remove <strong>{domain.domain}</strong> from Vito?
+            Are you sure you want to remove <strong>{domain.domain}</strong> from HiTechCloudPanel?
           </p>
-          <p className="text-muted-foreground text-sm">This will only remove the domain from Vito, not from your DNS provider.</p>
+          <p className="text-muted-foreground text-sm">This will only remove the domain from HiTechCloudPanel, not from your DNS provider.</p>
           <InputError message={form.errors.domain} />
         </div>
         <DialogFooter>

@@ -27,7 +27,7 @@ export default function StorageProviders() {
         <div className="flex items-start justify-between">
           <Heading title="Storage Providers" description="Here you can manage all of the storage provider connections" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/settings/storage-providers" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/settings/storage-providers" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

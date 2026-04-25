@@ -27,9 +27,9 @@ export default function SyncCronJobs({ server }: { server: Server }) {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Sync Cron Jobs</DialogTitle>
-          <DialogDescription className="sr-only">Sync manually created cron jobs from the server to Vito.</DialogDescription>
+          <DialogDescription className="sr-only">Sync manually created cron jobs from the server to HiTechCloudPanel.</DialogDescription>
         </DialogHeader>
-        <p className="p-4">Are you sure you want to sync manually created cron jobs from the server to Vito?</p>
+        <p className="p-4">Are you sure you want to sync manually created cron jobs from the server to HiTechCloudPanel?</p>
         <DialogFooter>
           <DialogTrigger asChild>
             <Button variant="outline">Cancel</Button>

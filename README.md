@@ -1,7 +1,7 @@
 <p align="center">
     <img alt="HiTechCloud Panel" src="https://github.com/user-attachments/assets/f477ab88-8e1c-474e-8238-bf5892b2840f">
     <p align="center">
-        <a href="https://github.com/hitechcloud-vietnam/hitechcloud-panel/actions"><img alt="GitHub Workflow Status" src="https://github.com/vitodeploy/vito/workflows/tests/badge.svg"></a>
+        <a href="https://github.com/hitechcloud-vietnam/hitechcloudpanel/actions"><img alt="GitHub Workflow Status" src="https://github.com/hitechcloud-vietnam/hitechcloudpanel/workflows/tests/badge.svg"></a>
     </p>
 </p>
 
@@ -15,7 +15,7 @@ production servers without a hassle.
 ## Quick Start
 
 ```sh
-bash <(curl -Ls https://raw.githubusercontent.com/hitechcloud-vietnam/hitechcloud-panel/main/scripts/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/hitechcloud-vietnam/hitechcloudpanel/main/scripts/install.sh)
 ```
 
 ## Features

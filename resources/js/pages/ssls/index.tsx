@@ -31,7 +31,7 @@ export default function Ssls() {
         <HeaderContainer>
           <Heading title="SSL" description="Here you can SSL certificates" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/sites/ssl" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/sites/ssl" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

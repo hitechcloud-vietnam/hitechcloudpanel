@@ -27,9 +27,9 @@ export default function SyncUsers({ server }: { server: Server }) {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Sync database users</DialogTitle>
-          <DialogDescription className="sr-only">Sync database users from the server to Vito.</DialogDescription>
+          <DialogDescription className="sr-only">Sync database users from the server to HiTechCloudPanel.</DialogDescription>
         </DialogHeader>
-        <p className="p-4">Are you sure you want to sync the database users from the server to Vito?</p>
+        <p className="p-4">Are you sure you want to sync the database users from the server to HiTechCloudPanel?</p>
         <DialogFooter>
           <DialogTrigger asChild>
             <Button variant="outline">Cancel</Button>

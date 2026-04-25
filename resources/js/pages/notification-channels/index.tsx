@@ -25,7 +25,7 @@ export default function NotificationChannels() {
         <div className="flex items-start justify-between">
           <Heading title="Notification Channels" description="Here you can manage all of the notification channel connections" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/settings/notification-channels" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/settings/notification-channels" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

@@ -27,7 +27,7 @@ export default function Commands() {
         <div className="flex items-start justify-between">
           <Heading title="Commands" description="These are the commands that you can run on your site's location" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/sites/commands" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/sites/commands" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

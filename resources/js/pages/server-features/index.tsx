@@ -25,7 +25,7 @@ export default function ServerFeatures() {
 
       <Container className="max-w-5xl">
         <HeaderContainer>
-          <Heading title="Features" description="Your server has some features enabled by Vito or other plugins" />
+          <Heading title="Features" description="Your server has some features enabled by HiTechCloudPanel or other plugins" />
         </HeaderContainer>
 
         <Card>

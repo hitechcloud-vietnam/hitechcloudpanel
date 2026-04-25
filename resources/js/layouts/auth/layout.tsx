@@ -30,9 +30,9 @@ export default function AuthLayout({ children, title, description }: PropsWithCh
           </div>
           {children}
           <div className="text-muted-foreground/50 text-center text-xs">
-            VitoDeploy{' '}
+            HiTechCloudPanel{' '}
             <a
-              href={`https://github.com/vitodeploy/vito/releases/tag/${page.props.version}`}
+              href={`https://github.com/hitechcloud-vietnam/hitechcloudpanel/releases/tag/${page.props.version}`}
               className="hover:text-primary cursor-pointer"
               target="_blank"
             >

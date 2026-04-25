@@ -33,7 +33,7 @@ export default function CronJobIndex() {
             description={page.props.site ? `Here you can manage ${page.props.site.domain}'s cron jobs` : "Here you can manage server's cron jobs"}
           />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/servers/cronjobs" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/servers/cronjobs" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

@@ -18,7 +18,9 @@ export default function OfficialPlugins() {
     queryKey: ['official-plugins'],
     queryFn: async ({ pageParam }) => {
       const data = (
-        await axios.get('https://api.github.com/search/repositories?q=owner:vitodeploy%20topic:vitodeploy-plugin&per_page=10&page=' + pageParam)
+        await axios.get(
+          'https://api.github.com/search/repositories?q=owner:hitechcloud-vietnam%20topic:hitechcloudpanel-plugin&per_page=10&page=' + pageParam,
+        )
       ).data;
       if (data.items.length == 10) {
         data.next_page = (pageParam as number) + 1;

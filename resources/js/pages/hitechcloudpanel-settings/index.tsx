@@ -4,31 +4,29 @@ import Container from '@/components/container';
 import Heading from '@/components/heading';
 import { Card, CardContent, CardRow } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import ExportHiTechCloudPanel from '@/pages/hitechcloudpanel-settings/components/export';
-import ImportHiTechCloudPanel from '@/pages/hitechcloudpanel-settings/components/import';
-import ExportHitechCloudPanel from './components/export';
-import ImportHitechCloudPanel from './components/import';
+import ExportHiTechCloudPanel from './components/export';
+import ImportHiTechCloudPanel from './components/import';
 
-export default function Users() {
+export default function HiTechCloudPanelSettings() {
   return (
     <AdminLayout>
-      <Head title="HitechCloudPanel Settings" />
+      <Head title="HiTechCloudPanel Settings" />
 
       <Container className="max-w-5xl">
         <div className="flex items-start justify-between">
-          <Heading title="HitechCloudPanel Settings" description="Here you can manage general HitechCloudPanel settings" />
+          <Heading title="HiTechCloudPanel Settings" description="Here you can manage general HiTechCloudPanel settings" />
         </div>
 
         <Card>
           <CardContent>
             <CardRow>
               <span>Export all data</span>
-              <ExportHitechCloudPanel />
+              <ExportHiTechCloudPanel />
             </CardRow>
             <Separator />
             <CardRow>
               <span>Import</span>
-              <ImportHitechCloudPanel />
+              <ImportHiTechCloudPanel />
             </CardRow>
           </CardContent>
         </Card>

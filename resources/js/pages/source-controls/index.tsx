@@ -25,7 +25,7 @@ export default function SourceControls() {
         <div className="flex items-start justify-between">
           <Heading title="Source Controls" description="Here you can manage all of the source control connections" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/settings/source-controls" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/settings/source-controls" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

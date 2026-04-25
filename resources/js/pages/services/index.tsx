@@ -26,7 +26,7 @@ export default function WorkerIndex() {
         <HeaderContainer>
           <Heading title="Services" description="Here you can manage server's services" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/servers/services" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/servers/services" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

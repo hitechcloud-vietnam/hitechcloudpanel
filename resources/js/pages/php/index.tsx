@@ -26,7 +26,7 @@ export default function PHP() {
         <HeaderContainer>
           <Heading title="PHP" description="Here you can manage PHP" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/servers/php" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/servers/php" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

@@ -28,7 +28,7 @@ export default function Servers() {
         <div className="flex items-start justify-between">
           <Heading title="Servers" description="All of the servers of your project listed here" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/servers/create" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/servers/create" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>

@@ -83,19 +83,19 @@ export function AppSidebar({ secondNavItems, secondNavTitle }: { secondNavItems?
       hidden: !page.props.auth.user?.is_admin,
     },
     {
-      title: 'Vito Logs',
+      title: 'HiTechCloudPanel Logs',
       href: route('log-viewer.index'),
       icon: LogsIcon,
       hidden: !page.props.auth.user?.is_admin,
     },
     {
       title: 'Repository',
-      href: 'https://github.com/vitodeploy/vito',
+      href: 'https://github.com/hitechcloud-vietnam/hitechcloudpanel',
       icon: Folder,
     },
     {
       title: 'Documentation',
-      href: 'https://vitodeploy.com',
+      href: 'https://docs.panel.hitechcloud.one',
       icon: BookOpen,
     },
   ];

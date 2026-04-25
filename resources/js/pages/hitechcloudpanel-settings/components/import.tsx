@@ -17,7 +17,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import InputError from '@/components/ui/input-error';
 
-export default function ImportHitechCloudPanel() {
+export default function ImportHiTechCloudPanel() {
   const form = useForm({
     backup_file: null as File | null,
   });

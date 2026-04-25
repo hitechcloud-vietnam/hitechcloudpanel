@@ -261,7 +261,7 @@ export default function CreateSite({
                     type="text"
                     value={form.data.domain}
                     onChange={(e) => form.setData('domain', e.target.value)}
-                    placeholder="vitodeploy.com"
+                    placeholder="hitechcloudpanel.com"
                   />
                   <InputError message={form.errors.domain} />
                 </FormField>

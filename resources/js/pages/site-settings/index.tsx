@@ -37,7 +37,7 @@ export default function Databases() {
         <HeaderContainer>
           <Heading title="Settings" description="Here you can manage your site's settings" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/sites/settings" target="_blank">
+            <a href="https://docs.panel.hitechcloud.one/docs/sites/settings" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>
