@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Vito\Plugins\Example\Repo;
+namespace App\HiTechCloudPanel\Plugins\Example\Repo;
 
 use App\Plugins\AbstractPlugin;
 

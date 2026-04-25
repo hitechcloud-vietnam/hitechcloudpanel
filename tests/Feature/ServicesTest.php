@@ -280,7 +280,7 @@ class ServicesTest extends TestCase
     public function test_install_service(string $name, string $type, string $version): void
     {
         Http::fake([
-            'https://api.github.com/repos/vito/vito-agent/releases/latest' => Http::response([
+            'https://api.github.com/repos/hitechcloud-vietnam/agent/releases/latest' => Http::response([
                 'tag_name' => '0.1.0',
             ]),
         ]);

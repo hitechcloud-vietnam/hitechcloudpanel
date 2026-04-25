@@ -1,13 +1,13 @@
-sudo service vito-agent stop
+sudo service hitechcloudpanel-agent stop
 
-sudo systemctl disable vito-agent
+sudo systemctl disable hitechcloudpanel-agent
 
-sudo rm -f /usr/local/bin/vito-agent
+sudo rm -f /usr/local/bin/hitechcloudpanel-agent
 
-sudo rm -f /etc/systemd/system/vito-agent.service
+sudo rm -f /etc/systemd/system/hitechcloudpanel-agent.service
 
-sudo rm -rf /etc/vito-agent
+sudo rm -rf /etc/hitechcloudpanel-agent
 
 sudo systemctl daemon-reload
 
-echo "Vito Agent uninstalled successfully"
+echo "HitechCloudPanel Agent uninstalled successfully"

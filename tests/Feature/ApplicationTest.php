@@ -94,7 +94,7 @@ class ApplicationTest extends TestCase
             'status' => DeploymentStatus::FINISHED,
         ]);
 
-        SSH::assertExecutedContains('cd /home/vito/'.$this->site->domain);
+        SSH::assertExecutedContains('cd /home/hitechcloudpanel/'.$this->site->domain);
         SSH::assertExecutedContains('git pull');
 
         Notification::assertSentTo($this->notificationChannel, DeploymentCompleted::class);
@@ -369,7 +369,7 @@ class ApplicationTest extends TestCase
             'site' => $this->site,
         ]), [
             'env' => 'APP_ENV="production"',
-            'path' => '/home/vito/other-site/.env',
+            'path' => '/home/hitechcloudpanel/other-site/.env',
         ])
             ->assertSessionHasErrors('path');
     }
@@ -380,7 +380,7 @@ class ApplicationTest extends TestCase
 
         $this->site->update([
             'type_data' => array_merge($this->site->type_data ?? [], [
-                'env_path' => '/home/vito/other-site/.env',
+                'env_path' => '/home/hitechcloudpanel/other-site/.env',
             ]),
         ]);
 
@@ -391,7 +391,7 @@ class ApplicationTest extends TestCase
             'site' => $this->site,
         ]), [
             'env' => 'APP_ENV="production"',
-            'path' => '/home/vito/other-site/.env',
+            'path' => '/home/hitechcloudpanel/other-site/.env',
         ])
             ->assertSessionDoesntHaveErrors();
     }
@@ -465,7 +465,7 @@ class ApplicationTest extends TestCase
 
         $deployment = $this->site->deployments()->first();
         $this->assertEquals('saeed', $deployment->commit_data['name']);
-        $this->assertEquals('saeed@vitodeploy.com', $deployment->commit_data['email']);
+        $this->assertEquals('saeed@hitechcloudpanel.one', $deployment->commit_data['email']);
     }
 
     public function test_git_hook_deployment_invalid_secret(): void
@@ -513,7 +513,7 @@ class ApplicationTest extends TestCase
                     'commit' => [
                         'committer' => [
                             'name' => 'saeed',
-                            'email' => 'saeed@vitodeploy.com',
+                            'email' => 'saeed@hitechcloudpanel.one',
                         ],
                         'message' => 'test commit message',
                         'url' => 'https://github.com',
@@ -532,7 +532,7 @@ class ApplicationTest extends TestCase
                     'commit' => [
                         'committer' => [
                             'name' => 'saeed',
-                            'email' => 'saeed@vitodeploy.com',
+                            'email' => 'saeed@hitechcloudpanel.one',
                         ],
                         'message' => 'test commit message',
                         'url' => 'https://github.com',
@@ -550,7 +550,7 @@ class ApplicationTest extends TestCase
                     [
                         'id' => '123',
                         'committer_name' => 'saeed',
-                        'committer_email' => 'saeed@vitodeploy.com',
+                        'committer_email' => 'saeed@hitechcloudpanel.one',
                         'title' => 'test',
                         'web_url' => 'https://gitlab.com',
                     ],
@@ -567,7 +567,7 @@ class ApplicationTest extends TestCase
                     [
                         'id' => '123',
                         'committer_name' => 'saeed',
-                        'committer_email' => 'saeed@vitodeploy.com',
+                        'committer_email' => 'saeed@hitechcloudpanel.one',
                         'title' => 'test',
                         'web_url' => 'https://gitlab.com',
                     ],
@@ -593,7 +593,7 @@ class ApplicationTest extends TestCase
                         [
                             'hash' => '123',
                             'author' => [
-                                'raw' => 'saeed <saeed@vitodeploy.com>',
+                                'raw' => 'saeed <saeed@hitechcloudpanel.one>',
                             ],
                             'message' => 'test',
                             'links' => [
@@ -625,7 +625,7 @@ class ApplicationTest extends TestCase
                         [
                             'hash' => '123',
                             'author' => [
-                                'raw' => 'saeed <saeed@vitodeploy.com>',
+                                'raw' => 'saeed <saeed@hitechcloudpanel.one>',
                             ],
                             'message' => 'test',
                             'links' => [

@@ -18,7 +18,7 @@ class MetricsTest extends TestCase
 
         Service::factory()->create([
             'server_id' => $this->server->id,
-            'name' => 'vito-agent',
+            'name' => 'hitechcloudpanel-agent',
             'type' => 'monitoring',
             'version' => 'latest',
             'status' => ServiceStatus::READY,
@@ -35,7 +35,7 @@ class MetricsTest extends TestCase
 
         Service::factory()->create([
             'server_id' => $this->server->id,
-            'name' => 'vito-agent',
+            'name' => 'hitechcloudpanel-agent',
             'type' => 'monitoring',
             'version' => 'latest',
             'status' => ServiceStatus::READY,

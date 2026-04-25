@@ -18,7 +18,7 @@ class DeleteOlderMetricsCommandTest extends TestCase
     {
         $monitoring = Service::factory()->create([
             'server_id' => $this->server->id,
-            'name' => 'vito-agent',
+            'name' => 'hitechcloudpanel-agent',
             'type' => 'monitoring',
             'type_data' => [
                 'data_retention' => 1,

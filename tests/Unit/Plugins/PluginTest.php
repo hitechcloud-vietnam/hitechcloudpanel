@@ -28,13 +28,13 @@ class PluginTest extends TestCase
 
     private string $pluginPath;
 
-    private string $repoUrl = 'https://github.com/RichardAnderson/VitoOctanePlugin';
+    private string $repoUrl = 'https://github.com/RichardAnderson/HitechCloudPanelOctanePlugin';
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->pluginPath = app_path('Vito/Plugins');
+        $this->pluginPath = app_path('HiTechCloudPanel/Plugins');
         $this->backupPath = storage_path('plugins_backup_'.time());
 
         $this->movePlugins($this->pluginPath, $this->backupPath);
@@ -104,7 +104,7 @@ class PluginTest extends TestCase
 
     private function installDemoPlugin(): Plugin
     {
-        $zip = implode(DIRECTORY_SEPARATOR, [__DIR__, 'Artifacts', 'VitoOctanePlugin-1.0.2.zip']);
+        $zip = implode(DIRECTORY_SEPARATOR, [__DIR__, 'Artifacts', 'HitechCloudPanelOctanePlugin-1.0.2.zip']);
 
         $this->app->bind(DownloadRelease::class, function () use ($zip) {
             $mock = Mockery::mock(DownloadRelease::class);
@@ -189,7 +189,7 @@ class PluginTest extends TestCase
         $plugin = $this->createFakePlugin();
 
         $this->assertNotNull($plugin);
-        $this->assertThat($plugin->namespace, $this->equalTo('App\\Vito\\Plugins\\ExampleUser\\ExampleRepo\\Plugin'));
+        $this->assertThat($plugin->namespace, $this->equalTo('App\\HiTechCloudPanel\\Plugins\\ExampleUser\\ExampleRepo\\Plugin'));
         $this->assertThat($plugin->is_installed, $this->isFalse());
         $this->assertThat($plugin->is_enabled, $this->isFalse());
     }

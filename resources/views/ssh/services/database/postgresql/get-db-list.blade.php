@@ -4,5 +4,5 @@ if ! sudo -u postgres psql -c "SELECT
     datcollate AS collation
     FROM pg_database;";
 then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi

@@ -5,11 +5,11 @@ else
 fi
 
 if ! curl -sS -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi
 
 if ! chmod +x wp-cli.phar; then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi
 
 if [ "{{ $isIsolated }}" == "true" ]; then
@@ -17,14 +17,14 @@ if [ "{{ $isIsolated }}" == "true" ]; then
     ln -sf /home/{{ $isolatedUsername }}/bin/wp-cli.phar /home/{{ $isolatedUsername }}/bin/wp
 else
     if ! sudo mv wp-cli.phar /usr/local/bin/wp; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
 fi
 
 rm -rf {{ $path }}
 
 if ! wp --path={{ $path }} core download; then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi
 
 if ! wp --path={{ $path }} core config \
@@ -33,7 +33,7 @@ if ! wp --path={{ $path }} core config \
     --dbpass="{{ $dbPass }}" \
     --dbhost="{{ $dbHost }}" \
     --dbprefix="{{ $dbPrefix }}"; then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi
 
 if ! wp --path={{ $path }} core install \
@@ -42,5 +42,5 @@ if ! wp --path={{ $path }} core install \
     --admin_user="{{ $username }}" \
     --admin_password="{{ $password }}" \
     --admin_email="{{ $email }}"; then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi

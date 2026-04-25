@@ -3,8 +3,8 @@ user = {{ $user }}
 group = {{ $user }}
 
 listen = /run/php/php{{ $version }}-fpm-{{ $user }}.sock
-listen.owner = vito
-listen.group = vito
+listen.owner = hitechcloudpanel
+listen.group = hitechcloudpanel
 listen.mode = 0660
 
 pm = dynamic

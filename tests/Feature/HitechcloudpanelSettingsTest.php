@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class VitoSettingsTest extends TestCase
+class HitechcloudpanelSettingsTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -13,7 +13,7 @@ class VitoSettingsTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        $this->get(route('vito-settings.export'))
-            ->assertDownload('vito-backup-'.date('Y-m-d').'.zip');
+        $this->get(route('hitechcloudpanel-settings.export'))
+            ->assertDownload('hitechcloudpanel-backup-'.date('Y-m-d').'.zip');
     }
 }

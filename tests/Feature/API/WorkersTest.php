@@ -95,7 +95,7 @@ class WorkersTest extends TestCase
         ]), [
             'name' => 'Test Worker',
             'command' => 'php artisan worker:work',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => true,
             'auto_restart' => true,
             'numprocs' => 1,
@@ -129,7 +129,7 @@ class WorkersTest extends TestCase
         ]), [
             'name' => 'Test Worker',
             'command' => 'php artisan worker:work',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => true,
             'auto_restart' => true,
             'numprocs' => 1,

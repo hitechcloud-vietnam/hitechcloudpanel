@@ -33,8 +33,8 @@ class ApiDocsTest extends TestCase
         // Verify the response contains valid YAML structure
         $yamlContent = $response->getContent();
         $this->assertStringContainsString('openapi: 3.0.0', $yamlContent);
-        $this->assertStringContainsString("title: 'VitoDeploy API'", $yamlContent);
+        $this->assertStringContainsString("title: 'HiTechCloudPanel API'", $yamlContent);
         $this->assertStringContainsString('version: 1.0.0', $yamlContent);
-        $this->assertStringContainsString("description: 'Complete API documentation for VitoDeploy - Free and Self-Hosted server management tool'", $yamlContent);
+        $this->assertStringContainsString("description: 'Complete API documentation for HiTechCloudPanel - Free and Self-Hosted server management tool'", $yamlContent);
     }
 }

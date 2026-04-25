@@ -567,7 +567,7 @@ class SitesTest extends TestCase
                     'aliases' => ['www.example.com'],
                     'php_version' => '8.2',
                     'web_directory' => 'public',
-                    'user' => 'vito',
+                    'user' => 'hitechcloudpanel',
                 ],
             ],
             [

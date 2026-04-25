@@ -1,53 +1,53 @@
 arch=$(uname -m)
 
 if [ "$arch" == "x86_64" ]; then
-    executable="vitoagent-linux-amd64"
+    executable="hitechcloudpanelagent-linux-amd64"
 elif [ "$arch" == "i686" ]; then
-    executable="vitoagent-linux-amd"
+    executable="hitechcloudpanelagent-linux-amd"
 elif [ "$arch" == "armv7l" ]; then
-    executable="vitoagent-linux-arm"
+    executable="hitechcloudpanelagent-linux-arm"
 elif [ "$arch" == "aarch64" ]; then
-    executable="vitoagent-linux-arm64"
+    executable="hitechcloudpanelagent-linux-arm64"
 else
-    executable="vitoagent-linux-amd64"
+    executable="hitechcloudpanelagent-linux-amd64"
 fi
 
 wget {{ $downloadUrl }}/$executable
 
 chmod +x ./$executable
 
-sudo mv ./$executable /usr/local/bin/vito-agent
+sudo mv ./$executable /usr/local/bin/hitechcloudpanel-agent
 
 # create service
-export VITO_AGENT_SERVICE="
+export HITECHCLOUDPANELAGENT_SERVICE="
 [Unit]
-Description=Vito Agent
+Description=HitechCloudPanel Agent
 After=network.target
 
 [Service]
 Type=simple
 User=root
-ExecStart=/usr/local/bin/vito-agent
+ExecStart=/usr/local/bin/hitechcloudpanel-agent
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
 "
-echo "${VITO_AGENT_SERVICE}" | sudo tee /etc/systemd/system/vito-agent.service
+echo "${HITECHCLOUDPANELAGENT_SERVICE}" | sudo tee /etc/systemd/system/hitechcloudpanel-agent.service
 
-sudo mkdir -p /etc/vito-agent
+sudo mkdir -p /etc/hitechcloudpanel-agent
 
-export VITO_AGENT_CONFIG="
+export HITECHCLOUDPANELAGENT_CONFIG="
 {
     \"url\": \"{{ $configUrl }}\",
     \"secret\": \"{{ $configSecret }}\"
 }
 "
 
-echo "${VITO_AGENT_CONFIG}" | sudo tee /etc/vito-agent/config.json
+echo "${HITECHCLOUDPANELAGENT_CONFIG}" | sudo tee /etc/hitechcloudpanel-agent/config.json
 
 sudo systemctl daemon-reload
-sudo systemctl enable vito-agent
-sudo systemctl start vito-agent
+sudo systemctl enable hitechcloudpanel-agent
+sudo systemctl start hitechcloudpanel-agent
 
-echo "Vito Agent installed successfully"
+echo "HitechCloudPanel Agent installed successfully"

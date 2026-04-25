@@ -5,5 +5,5 @@ if ! sudo mariadb -e "SELECT u.User,
         WHERE p.GRANTEE = concat('\'', u.User, '\'', '@', '\'', u.Host, '\'')) as Privileges
 FROM mysql.user u;";
 then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi

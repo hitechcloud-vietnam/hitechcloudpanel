@@ -4,7 +4,7 @@ if ! sudo mariadb -e "SELECT
     DEFAULT_COLLATION_NAME AS collation
     FROM information_schema.SCHEMATA;";
 then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi
 
 

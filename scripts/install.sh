@@ -11,7 +11,7 @@ echo "
                                  |_|            |___/
 "
 
-export VITO_VERSION="3.x"
+export HITECHCLOUDPANEL_VERSION="3.x"
 export DEBIAN_FRONTEND=noninteractive
 export NEEDRESTART_MODE=a
 
@@ -19,11 +19,11 @@ if [[ -z "${V_PASSWORD}" ]]; then
   export V_PASSWORD=$(openssl rand -base64 12)
 fi
 
-if [[ -z "${VITO_APP_URL}" ]]; then
-  export DEFAULT_VITO_APP_URL=http://$(curl -s https://free.freeipapi.com -4)
-  read -p "Enter the APP_URL [$DEFAULT_VITO_APP_URL]: " VITO_APP_URL
-  export VITO_APP_URL=${VITO_APP_URL:-$DEFAULT_VITO_APP_URL}
-  echo "APP_URL is set to: $VITO_APP_URL\n"
+if [[ -z "${HITECHCLOUDPANEL_APP_URL}" ]]; then
+  export DEFAULT_HITECHCLOUDPANEL_APP_URL=http://$(curl -s https://free.freeipapi.com -4)
+  read -p "Enter the APP_URL [$DEFAULT_HITECHCLOUDPANEL_APP_URL]: " HITECHCLOUDPANEL_APP_URL
+  export HITECHCLOUDPANEL_APP_URL=${HITECHCLOUDPANEL_APP_URL:-$DEFAULT_HITECHCLOUDPANEL_APP_URL}
+  echo "APP_URL is set to: $HITECHCLOUDPANEL_APP_URL\n"
 fi
 
 if [[ -z "${V_ADMIN_EMAIL}" ]]; then
@@ -46,14 +46,14 @@ fi
 
 apt remove needrestart -y
 
-useradd -p $(openssl passwd -1 ${V_PASSWORD}) vito
-usermod -aG vito
-echo "vito ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
-mkdir /home/vito
-mkdir /home/vito/.ssh
-chown -R vito:vito /home/vito
-chsh -s /bin/bash "vito"
-su - "vito" -c "ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa" <<<y
+useradd -p $(openssl passwd -1 ${V_PASSWORD}) hitechcloudpanel
+usermod -aG hitechcloudpanel
+echo "hitechcloudpanel ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+mkdir /home/hitechcloudpanel
+mkdir /home/hitechcloudpanel/.ssh
+chown -R hitechcloudpanel:hitechcloudpanel /home/hitechcloudpanel
+chsh -s /bin/bash "hitechcloudpanel"
+su - "hitechcloudpanel" -c "ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa" <<<y
 
 # upgrade
 apt clean
@@ -69,7 +69,7 @@ apt install certbot python3-certbot-nginx -y
 
 # nginx
 export V_NGINX_CONFIG="
-    user vito;
+    user hitechcloudpanel;
     worker_processes auto;
     pid /run/nginx.pid;
     include /etc/nginx/modules-enabled/*.conf;
@@ -109,7 +109,7 @@ export V_PHP_VERSION="8.4"
 add-apt-repository ppa:ondrej/php -y
 apt update
 apt install -y php${V_PHP_VERSION} php${V_PHP_VERSION}-fpm php${V_PHP_VERSION}-mbstring php${V_PHP_VERSION}-mcrypt php${V_PHP_VERSION}-gd php${V_PHP_VERSION}-xml php${V_PHP_VERSION}-curl php${V_PHP_VERSION}-gettext php${V_PHP_VERSION}-zip php${V_PHP_VERSION}-bcmath php${V_PHP_VERSION}-soap php${V_PHP_VERSION}-redis php${V_PHP_VERSION}-sqlite3 php${V_PHP_VERSION}-intl
-if ! sed -i "s/www-data/vito/g" /etc/php/${V_PHP_VERSION}/fpm/pool.d/www.conf; then
+if ! sed -i "s/www-data/hitechcloudpanel/g" /etc/php/${V_PHP_VERSION}/fpm/pool.d/www.conf; then
   echo 'Error installing PHP' && exit 1
 fi
 service php${V_PHP_VERSION}-fpm enable
@@ -131,13 +131,13 @@ service redis start
 
 # setup website
 export COMPOSER_ALLOW_SUPERUSER=1
-export V_REPO="https://github.com/vitodeploy/vito.git"
+export V_REPO="https://github.com/hitechcloud-vietnam/hitechcloudpanel.git"
 export V_VHOST_CONFIG="
 server {
     listen 80;
     listen [::]:80;
     server_name _;
-    root /home/vito/vito/public;
+    root /home/hitechcloudpanel/hitechcloudpanel/public;
 
     add_header X-Frame-Options \"SAMEORIGIN\";
     add_header X-Content-Type-Options \"nosniff\";
@@ -171,61 +171,61 @@ server {
     }
 }
 "
-rm -rf /home/vito/vito
-mkdir /home/vito/vito
-chown -R vito:vito /home/vito/vito
-chmod -R 755 /home/vito/vito
+rm -rf /home/hitechcloudpanel/hitechcloudpanel
+mkdir /home/hitechcloudpanel/hitechcloudpanel
+chown -R hitechcloudpanel:hitechcloudpanel /home/hitechcloudpanel/hitechcloudpanel
+chmod -R 755 /home/hitechcloudpanel/hitechcloudpanel
 rm /etc/nginx/sites-available/default
 rm /etc/nginx/sites-enabled/default
-echo "${V_VHOST_CONFIG}" | tee /etc/nginx/sites-available/vito
-ln -s /etc/nginx/sites-available/vito /etc/nginx/sites-enabled/
+echo "${V_VHOST_CONFIG}" | tee /etc/nginx/sites-available/hitechcloudpanel
+ln -s /etc/nginx/sites-available/hitechcloudpanel /etc/nginx/sites-enabled/
 service nginx restart
-rm -rf /home/vito/vito
+rm -rf /home/hitechcloudpanel/hitechcloudpanel
 git config --global core.fileMode false
-git clone -b ${VITO_VERSION} ${V_REPO} /home/vito/vito
-find /home/vito/vito -type d -exec chmod 755 {} \;
-find /home/vito/vito -type f -exec chmod 644 {} \;
-cd /home/vito/vito && git config core.fileMode false
-cd /home/vito/vito
-git checkout $(git tag -l --merged ${VITO_VERSION} --sort=-v:refname | head -n 1)
+git clone -b ${HITECHCLOUDPANEL_VERSION} ${V_REPO} /home/hitechcloudpanel/hitechcloudpanel
+find /home/hitechcloudpanel/hitechcloudpanel -type d -exec chmod 755 {} \;
+find /home/hitechcloudpanel/hitechcloudpanel -type f -exec chmod 644 {} \;
+cd /home/hitechcloudpanel/hitechcloudpanel && git config core.fileMode false
+cd /home/hitechcloudpanel/hitechcloudpanel
+git checkout $(git tag -l --merged ${HITECHCLOUDPANEL_VERSION} --sort=-v:refname | head -n 1)
 composer install --no-dev
 cp .env.prod .env
-sed -i "s|^APP_URL=.*|APP_URL=${VITO_APP_URL}|" .env
-touch /home/vito/vito/storage/database.sqlite
+sed -i "s|^APP_URL=.*|APP_URL=${HITECHCLOUDPANEL_APP_URL}|" .env
+touch /home/hitechcloudpanel/hitechcloudpanel/storage/database.sqlite
 php artisan key:generate
 php artisan storage:link
 php artisan migrate --force
-php artisan user:create Vito ${V_ADMIN_EMAIL} ${V_ADMIN_PASSWORD}
-openssl genpkey -algorithm RSA -out /home/vito/vito/storage/ssh-private.pem
-chmod 600 /home/vito/vito/storage/ssh-private.pem
-ssh-keygen -y -f /home/vito/vito/storage/ssh-private.pem >/home/vito/vito/storage/ssh-public.key
-chown -R vito:vito /home/vito/vito/storage/ssh-private.pem
-chown -R vito:vito /home/vito/vito/storage/ssh-public.key
+php artisan user:create HiTechCloudPanel ${V_ADMIN_EMAIL} ${V_ADMIN_PASSWORD}
+openssl genpkey -algorithm RSA -out /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-private.pem
+chmod 600 /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-private.pem
+ssh-keygen -y -f /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-private.pem >/home/hitechcloudpanel/hitechcloudpanel/storage/ssh-public.key
+chown -R hitechcloudpanel:hitechcloudpanel /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-private.pem
+chown -R hitechcloudpanel:hitechcloudpanel /home/hitechcloudpanel/hitechcloudpanel/storage/ssh-public.key
 
 # optimize
 php artisan optimize
 
 # cleanup
-chown -R vito:vito /home/vito
+chown -R hitechcloudpanel:hitechcloudpanel /home/hitechcloudpanel
 
 # setup supervisor
 export V_WORKER_CONFIG="
 [program:worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /home/vito/vito/artisan horizon
+command=php /home/hitechcloudpanel/hitechcloudpanel/artisan horizon
 autostart=1
 autorestart=1
-user=vito
+user=hitechcloudpanel
 redirect_stderr=true
-stdout_logfile=/home/vito/.logs/workers/worker.log
+stdout_logfile=/home/hitechcloudpanel/.logs/workers/worker.log
 stopwaitsecs=3600
 "
 apt-get install supervisor -y
 service supervisor enable
 service supervisor start
-mkdir -p /home/vito/.logs
-mkdir -p /home/vito/.logs/workers
-touch /home/vito/.logs/workers/worker.log
+mkdir -p /home/hitechcloudpanel/.logs
+mkdir -p /home/hitechcloudpanel/.logs/workers
+touch /home/hitechcloudpanel/.logs/workers/worker.log
 echo "${V_WORKER_CONFIG}" | tee /etc/supervisor/conf.d/worker.conf
 supervisorctl reread
 supervisorctl update
@@ -234,12 +234,12 @@ supervisorctl update
 supervisorctl start worker:*
 
 # setup cronjobs
-echo "* * * * * cd /home/vito/vito && php artisan schedule:run >> /dev/null 2>&1" | sudo -u vito crontab -
+echo "* * * * * cd /home/hitechcloudpanel/hitechcloudpanel && php artisan schedule:run >> /dev/null 2>&1" | sudo -u hitechcloudpanel crontab -
 
 # print info
 echo "🎉 Congratulations!"
-echo "✅ You can access Vito at: ${VITO_APP_URL}"
-echo "✅ SSH User: vito"
+echo "✅ You can access HiTechCloudPanel at: ${HITECHCLOUDPANEL_APP_URL}"
+echo "✅ SSH User: hitechcloudpanel"
 echo "✅ SSH Password: ${V_PASSWORD}"
 echo "✅ Admin Email: ${V_ADMIN_EMAIL}"
 echo "✅ Admin Password: ${V_ADMIN_PASSWORD}"

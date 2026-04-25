@@ -14,41 +14,41 @@ class InstallTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_install_vito_agent(): void
+    public function test_install_hitechcloudpanel_agent(): void
     {
         SSH::fake('Active: active');
         Http::fake([
-            'https://api.github.com/repos/vitodeploy/agent/tags' => Http::response([['name' => '0.1.0']]),
+            'https://api.github.com/repos/hitechcloud-vietnam/agent/tags' => Http::response([['name' => '0.1.0']]),
         ]);
 
         $this->server->monitoring()?->delete();
 
         app(Install::class)->install($this->server, [
             'type' => 'monitoring',
-            'name' => 'vito-agent',
+            'name' => 'hitechcloudpanel-agent',
             'version' => 'latest',
         ]);
 
         $this->assertDatabaseHas('services', [
             'server_id' => $this->server->id,
-            'name' => 'vito-agent',
+            'name' => 'hitechcloudpanel-agent',
             'type' => 'monitoring',
             'version' => '0.1.0',
             'status' => ServiceStatus::READY,
         ]);
     }
 
-    public function test_install_vito_agent_failed(): void
+    public function test_install_hitechcloudpanel_agent_failed(): void
     {
         $this->server->monitoring()?->delete();
         SSH::fake('Active: inactive');
         Http::fake([
-            'https://api.github.com/repos/vitodeploy/agent/tags' => Http::response([]),
+            'https://api.github.com/repos/hitechcloud-vietnam/agent/tags' => Http::response([]),
         ]);
 
         $service = app(Install::class)->install($this->server, [
             'type' => 'monitoring',
-            'name' => 'vito-agent',
+            'name' => 'hitechcloudpanel-agent',
             'version' => 'latest',
         ]);
 

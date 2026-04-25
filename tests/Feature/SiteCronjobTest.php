@@ -40,7 +40,7 @@ class SiteCronjobTest extends TestCase
         $cronjob = CronJob::factory()->create([
             'server_id' => $this->server->id,
             'site_id' => $this->site->id,
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
         ]);
 
         $this->delete(route('cronjobs.site.destroy', [
@@ -53,8 +53,8 @@ class SiteCronjobTest extends TestCase
             'id' => $cronjob->id,
         ]);
 
-        SSH::assertExecutedContains("echo '' | sudo -u vito crontab -");
-        SSH::assertExecutedContains('sudo -u vito crontab -l');
+        SSH::assertExecutedContains("echo '' | sudo -u hitechcloudpanel crontab -");
+        SSH::assertExecutedContains('sudo -u hitechcloudpanel crontab -l');
     }
 
     public function test_create_site_cronjob(): void
@@ -68,7 +68,7 @@ class SiteCronjobTest extends TestCase
             'site' => $this->site,
         ]), [
             'command' => 'ls -la',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'frequency' => '* * * * *',
         ])
             ->assertSessionDoesntHaveErrors();
@@ -77,13 +77,13 @@ class SiteCronjobTest extends TestCase
             'server_id' => $this->server->id,
             'site_id' => $this->site->id,
             'command' => 'ls -la',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'frequency' => '* * * * *',
             'status' => CronjobStatus::READY,
         ]);
 
-        SSH::assertExecutedContains("echo '* * * * * ls -la' | sudo -u vito crontab -");
-        SSH::assertExecutedContains('sudo -u vito crontab -l');
+        SSH::assertExecutedContains("echo '* * * * * ls -la' | sudo -u hitechcloudpanel crontab -");
+        SSH::assertExecutedContains('sudo -u hitechcloudpanel crontab -l');
     }
 
     public function test_create_site_cronjob_for_isolated_user(): void
@@ -147,7 +147,7 @@ class SiteCronjobTest extends TestCase
             'site' => $this->site,
         ]), [
             'command' => 'ls -la',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'frequency' => 'custom',
             'custom' => '* * * 1 1',
         ])
@@ -157,13 +157,13 @@ class SiteCronjobTest extends TestCase
             'server_id' => $this->server->id,
             'site_id' => $this->site->id,
             'command' => 'ls -la',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'frequency' => '* * * 1 1',
             'status' => CronjobStatus::READY,
         ]);
 
-        SSH::assertExecutedContains("echo '* * * 1 1 ls -la' | sudo -u vito crontab -");
-        SSH::assertExecutedContains('sudo -u vito crontab -l');
+        SSH::assertExecutedContains("echo '* * * 1 1 ls -la' | sudo -u hitechcloudpanel crontab -");
+        SSH::assertExecutedContains('sudo -u hitechcloudpanel crontab -l');
     }
 
     public function test_enable_site_cronjob(): void
@@ -176,7 +176,7 @@ class SiteCronjobTest extends TestCase
         $cronjob = CronJob::factory()->create([
             'server_id' => $this->server->id,
             'site_id' => $this->site->id,
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'command' => 'ls -la',
             'frequency' => '* * * 1 1',
             'status' => CronjobStatus::DISABLED,
@@ -193,8 +193,8 @@ class SiteCronjobTest extends TestCase
 
         $this->assertEquals(CronjobStatus::READY, $cronjob->status);
 
-        SSH::assertExecutedContains("echo '* * * 1 1 ls -la' | sudo -u vito crontab -");
-        SSH::assertExecutedContains('sudo -u vito crontab -l');
+        SSH::assertExecutedContains("echo '* * * 1 1 ls -la' | sudo -u hitechcloudpanel crontab -");
+        SSH::assertExecutedContains('sudo -u hitechcloudpanel crontab -l');
     }
 
     public function test_disable_site_cronjob(): void
@@ -207,7 +207,7 @@ class SiteCronjobTest extends TestCase
         $cronjob = CronJob::factory()->create([
             'server_id' => $this->server->id,
             'site_id' => $this->site->id,
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'command' => 'ls -la',
             'frequency' => '* * * 1 1',
             'status' => CronjobStatus::READY,
@@ -224,8 +224,8 @@ class SiteCronjobTest extends TestCase
 
         $this->assertEquals(CronjobStatus::DISABLED, $cronjob->status);
 
-        SSH::assertExecutedContains("echo '' | sudo -u vito crontab -");
-        SSH::assertExecutedContains('sudo -u vito crontab -l');
+        SSH::assertExecutedContains("echo '' | sudo -u hitechcloudpanel crontab -");
+        SSH::assertExecutedContains('sudo -u hitechcloudpanel crontab -l');
     }
 
     public function test_update_site_cronjob(): void
@@ -238,7 +238,7 @@ class SiteCronjobTest extends TestCase
         $cronjob = CronJob::factory()->create([
             'server_id' => $this->server->id,
             'site_id' => $this->site->id,
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'command' => 'ls -la',
             'frequency' => '* * * * *',
             'status' => CronjobStatus::READY,
@@ -250,7 +250,7 @@ class SiteCronjobTest extends TestCase
             'cronJob' => $cronjob,
         ]), [
             'command' => 'php artisan schedule:run',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'frequency' => '0 * * * *',
         ])
             ->assertSessionDoesntHaveErrors();
@@ -260,7 +260,7 @@ class SiteCronjobTest extends TestCase
         $this->assertEquals('php artisan schedule:run', $cronjob->command);
         $this->assertEquals('0 * * * *', $cronjob->frequency);
 
-        SSH::assertExecutedContains("echo '0 * * * * php artisan schedule:run' | sudo -u vito crontab -");
-        SSH::assertExecutedContains('sudo -u vito crontab -l');
+        SSH::assertExecutedContains("echo '0 * * * * php artisan schedule:run' | sudo -u hitechcloudpanel crontab -");
+        SSH::assertExecutedContains('sudo -u hitechcloudpanel crontab -l');
     }
 }

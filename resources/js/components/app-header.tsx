@@ -29,7 +29,7 @@ export function AppHeader() {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={() => window.open('https://github.com/sponsors/saeedvaziry')}>
+        <Button variant="outline" size="sm" onClick={() => window.open('https://github.com/sponsors/thanhan92f-f1')}>
           <HeartIcon className="text-pink-600" />
           <span className="hidden lg:block">Sponsor</span>
         </Button>

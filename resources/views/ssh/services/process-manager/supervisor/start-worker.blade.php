@@ -1,3 +1,3 @@
 if ! sudo supervisorctl start {{ $id }}:*; then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi

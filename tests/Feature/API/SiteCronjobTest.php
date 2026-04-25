@@ -73,13 +73,13 @@ class SiteCronjobTest extends TestCase
             'site' => $site,
         ]), [
             'command' => 'ls -la',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'frequency' => '* * * * *',
         ])
             ->assertSuccessful()
             ->assertJsonFragment([
                 'command' => 'ls -la',
-                'user' => 'vito',
+                'user' => 'hitechcloudpanel',
                 'frequency' => '* * * * *',
                 'status' => CronjobStatus::READY,
                 'site_id' => $site->id,
@@ -89,7 +89,7 @@ class SiteCronjobTest extends TestCase
             'server_id' => $this->server->id,
             'site_id' => $site->id,
             'command' => 'ls -la',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'frequency' => '* * * * *',
             'status' => CronjobStatus::READY,
         ]);

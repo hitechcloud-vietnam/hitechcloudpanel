@@ -1,6 +1,6 @@
 export DEBIAN_FRONTEND=noninteractive
 if ! sudo useradd -p $(openssl passwd -1 {{ $password }}) {{ $user }}; then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi
 
 sudo mkdir /home/{{ $user }}

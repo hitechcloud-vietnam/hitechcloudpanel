@@ -28,11 +28,11 @@ trait PrepareLoadBalancer
                 'status' => ServiceStatus::READY,
             ]);
             Site::factory()->create([
-                'domain' => 'vito.test',
-                'aliases' => ['www.vito.test'],
+                'domain' => 'hitechcloudpanel.test',
+                'aliases' => ['www.hitechcloudpanel.test'],
                 'server_id' => $server->id,
                 'type' => PHPBlank::id(),
-                'path' => '/home/vito/vito.test',
+                'path' => '/home/hitechcloudpanel/hitechcloudpanel.test',
                 'web_directory' => '',
             ]);
         }

@@ -17,14 +17,14 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import InputError from '@/components/ui/input-error';
 
-export default function ImportVito() {
+export default function ImportHitechCloudPanel() {
   const form = useForm({
     backup_file: null as File | null,
   });
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    form.post(route('vito-settings.import'));
+    form.post(route('hitechcloudpanel-settings.import'));
   };
 
   return (
@@ -38,9 +38,9 @@ export default function ImportVito() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Import</DialogTitle>
-          <DialogDescription className="sr-only">Import settings to Vito</DialogDescription>
+          <DialogDescription className="sr-only">Import settings to HitechCloudPanel</DialogDescription>
         </DialogHeader>
-        <Form id="import-vito-form" className="p-4" onSubmit={submit}>
+        <Form id="import-hitechcloudpanel-form" className="p-4" onSubmit={submit}>
           <FormFields>
             <FormField>
               <Label htmlFor="backup_file">Backup file</Label>
@@ -59,7 +59,7 @@ export default function ImportVito() {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button form="import-vito-form" disabled={form.processing}>
+          <Button form="import-hitechcloudpanel-form" disabled={form.processing}>
             {form.processing && <LoaderCircleIcon className="animate-spin" />}
             Import
           </Button>

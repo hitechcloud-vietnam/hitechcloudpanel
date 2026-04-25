@@ -27,7 +27,7 @@ class SyncCronjobTest extends TestCase
         // Check that cronjobs were created
         $serverCronJobs = CronJob::where('server_id', $this->server->id)->get();
 
-        // Should have 4 cronjobs (2 for root user, 2 for vito user)
+        // Should have 4 cronjobs (2 for root user, 2 for hitechcloudpanel user)
         $this->assertCount(4, $serverCronJobs);
 
         // Check that we have the expected commands
@@ -38,9 +38,9 @@ class SyncCronjobTest extends TestCase
 
         // Check that we have cronjobs for both users
         $rootCronJobs = $serverCronJobs->where('user', 'root');
-        $vitoCronJobs = $serverCronJobs->where('user', 'vito');
+        $hitechcloudpanelCronJobs = $serverCronJobs->where('user', 'hitechcloudpanel');
         $this->assertCount(2, $rootCronJobs);
-        $this->assertCount(2, $vitoCronJobs);
+        $this->assertCount(2, $hitechcloudpanelCronJobs);
     }
 
     public function test_sync_skips_existing_cronjobs(): void
@@ -113,7 +113,7 @@ class SyncCronjobTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('success', 'Cron jobs synced successfully.');
 
-        // Should create 4 cronjobs (2 for root, 2 for vito) and they should be disabled
+        // Should create 4 cronjobs (2 for root, 2 for hitechcloudpanel) and they should be disabled
         $cronJobs = CronJob::where('server_id', $this->server->id)->get();
         $this->assertCount(4, $cronJobs);
 
@@ -186,7 +186,7 @@ class SyncCronjobTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('success', 'Cron jobs synced successfully.');
 
-        // Should create 4 cronjobs (2 for root, 2 for vito)
+        // Should create 4 cronjobs (2 for root, 2 for hitechcloudpanel)
         $cronJobs = CronJob::where('server_id', $this->server->id)->get();
         $this->assertCount(4, $cronJobs);
 
@@ -203,10 +203,10 @@ class SyncCronjobTest extends TestCase
         }
     }
 
-    public function test_sync_disables_vito_cronjobs_removed_from_server(): void
+    public function test_sync_disables_hitechcloudpanel_cronjobs_removed_from_server(): void
     {
-        // Create a Vito-managed cronjob
-        $vitoCronJob = CronJob::factory()->create([
+        // Create a Hitechcloudpanel-managed cronjob
+        $hitechcloudpanelCronJob = CronJob::factory()->create([
             'server_id' => $this->server->id,
             'user' => 'root',
             'command' => '/usr/bin/backup.sh',
@@ -223,14 +223,14 @@ class SyncCronjobTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('success', 'Cron jobs synced successfully.');
 
-        // The Vito cronjob should be marked as disabled
-        $vitoCronJob->refresh();
-        $this->assertEquals(CronjobStatus::DISABLED, $vitoCronJob->status);
+        // The Hitechcloudpanel cronjob should be marked as disabled
+        $hitechcloudpanelCronJob->refresh();
+        $this->assertEquals(CronjobStatus::DISABLED, $hitechcloudpanelCronJob->status);
     }
 
-    public function test_sync_disables_vito_cronjobs_not_found_on_server(): void
+    public function test_sync_disables_hitechcloudpanel_cronjobs_not_found_on_server(): void
     {
-        // Create multiple Vito-managed cronjobs
+        // Create multiple Hitechcloudpanel-managed cronjobs
         $cronJob1 = CronJob::factory()->create([
             'server_id' => $this->server->id,
             'user' => 'root',
@@ -306,7 +306,7 @@ class SyncCronjobTest extends TestCase
 
     public function test_sync_handles_mixed_scenarios_with_deletions(): void
     {
-        // Create Vito-managed cronjobs
+        // Create Hitechcloudpanel-managed cronjobs
         $cronJob1 = CronJob::factory()->create([
             'server_id' => $this->server->id,
             'user' => 'root',
@@ -380,7 +380,7 @@ class SyncCronjobTest extends TestCase
             ->where('site_id', null)
             ->get();
 
-        // Should only have the one existing cronjob for each user (root + vito = 2 total)
+        // Should only have the one existing cronjob for each user (root + hitechcloudpanel = 2 total)
         $this->assertCount(2, $cronJobs);
 
         // The original cronjob should still be ready
@@ -417,8 +417,8 @@ class SyncCronjobTest extends TestCase
             ->count();
 
         // Before fix: would create duplicate with site_id = null
-        // After fix: recognizes site-level cronjob and doesn't duplicate it, only creates for vito user
-        // countBefore = 1 (site-level), countAfter should be 2 (site-level + vito user)
+        // After fix: recognizes site-level cronjob and doesn't duplicate it, only creates for hitechcloudpanel user
+        // countBefore = 1 (site-level), countAfter should be 2 (site-level + hitechcloudpanel user)
         $this->assertEquals($countBefore + 1, $countAfter);
 
         // The site-level cronjob should remain unchanged
@@ -453,7 +453,7 @@ class SyncCronjobTest extends TestCase
             ->where('site_id', null)
             ->get();
 
-        // Should only have the one existing cronjob for each user (root + vito = 2 total)
+        // Should only have the one existing cronjob for each user (root + hitechcloudpanel = 2 total)
         $this->assertCount(2, $cronJobs);
 
         // The original cronjob should still be ready
@@ -481,7 +481,7 @@ class SyncCronjobTest extends TestCase
         // Should only create cronjobs for the actual cron line, not the documentation comments
         $cronJobs = CronJob::where('server_id', $this->server->id)->get();
 
-        // Should have 2 cronjobs (1 for root, 1 for vito), not 6 (which would include the comment lines)
+        // Should have 2 cronjobs (1 for root, 1 for hitechcloudpanel), not 6 (which would include the comment lines)
         $this->assertCount(2, $cronJobs);
 
         // Both should have the actual backup command
@@ -513,7 +513,7 @@ class SyncCronjobTest extends TestCase
             ->where('site_id', null)
             ->get();
 
-        // Should only have the one existing cronjob for each user (root + vito = 2 total)
+        // Should only have the one existing cronjob for each user (root + hitechcloudpanel = 2 total)
         $this->assertCount(2, $cronJobs);
 
         // The original cronjob should still be ready

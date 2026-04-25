@@ -33,69 +33,69 @@ sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES FOR ROLE $USER_
 if [ "$PERMISSION" = "read" ]; then
     # Read-only access
     if ! sudo -u postgres psql -c "GRANT CONNECT ON DATABASE \"$DB_NAME\" TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT USAGE ON SCHEMA public TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
 elif [ "$PERMISSION" = "write" ]; then
     # Write access (no DROP or TRUNCATE)
     if ! sudo -u postgres psql -c "GRANT CONNECT ON DATABASE \"$DB_NAME\" TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT USAGE ON SCHEMA public TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if [ "$DB_VERSION" -ge 15 ]; then
         if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT CREATE ON SCHEMA public TO $USER_TO_LINK;"; then
-            echo 'VITO_SSH_ERROR' && exit 1
+            echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
         fi
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, TRIGGER ON ALL TABLES IN SCHEMA public TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, TRIGGER ON TABLES TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
 else
     # Admin access (all privileges)
     if ! sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE \"$DB_NAME\" TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if [ "$DB_VERSION" -ge 15 ]; then
         if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT USAGE, CREATE ON SCHEMA public TO $USER_TO_LINK;"; then
-            echo 'VITO_SSH_ERROR' && exit 1
+            echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
         fi
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
     if ! sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO $USER_TO_LINK;"; then
-        echo 'VITO_SSH_ERROR' && exit 1
+        echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
     fi
 fi
 

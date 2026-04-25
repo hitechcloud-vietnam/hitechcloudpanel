@@ -8,5 +8,5 @@ WHERE r.rolcanlogin
 GROUP BY r.rolname
 ORDER BY r.rolname;";
 then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi

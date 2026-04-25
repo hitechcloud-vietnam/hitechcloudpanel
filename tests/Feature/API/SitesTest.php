@@ -419,7 +419,7 @@ class SitesTest extends TestCase
             'site' => $site,
         ]), [
             'env' => $envContent,
-            'path' => '/home/vito/some-path/.env',
+            'path' => '/home/hitechcloudpanel/some-path/.env',
         ])
             ->assertSuccessful()
             ->assertJsonFragment([

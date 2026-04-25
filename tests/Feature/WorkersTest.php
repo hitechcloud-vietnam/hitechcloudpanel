@@ -65,7 +65,7 @@ class WorkersTest extends TestCase
         ]), [
             'name' => 'Test Worker',
             'command' => 'php artisan worker:work',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 1,
@@ -76,7 +76,7 @@ class WorkersTest extends TestCase
             'server_id' => $this->server->id,
             'name' => 'Test Worker',
             'command' => 'php artisan worker:work',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 1,
@@ -282,7 +282,7 @@ class WorkersTest extends TestCase
         ]), [
             'name' => 'Test Worker',
             'command' => 'php artisan worker:work',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 1,
@@ -295,7 +295,7 @@ class WorkersTest extends TestCase
             'site_id' => $site->id,
             'name' => 'Test Worker',
             'command' => 'php artisan worker:work',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 1,
@@ -313,7 +313,7 @@ class WorkersTest extends TestCase
         ]), [
             'name' => 'Test Worker',
             'command' => 'php artisan worker:work',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 1,
@@ -345,7 +345,7 @@ class WorkersTest extends TestCase
         ]), [
             'name' => 'Test Worker',
             'command' => 'php artisan worker:work',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 1,
@@ -381,7 +381,7 @@ class WorkersTest extends TestCase
         ]), [
             'name' => $worker->name,
             'command' => 'updated command',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 2,
@@ -412,7 +412,7 @@ class WorkersTest extends TestCase
         ]), [
             'name' => $worker->name,
             'command' => 'updated command',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 2,
@@ -449,7 +449,7 @@ class WorkersTest extends TestCase
         ]), [
             'name' => $worker->name,
             'command' => 'updated command',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'auto_start' => 1,
             'auto_restart' => 1,
             'numprocs' => 2,

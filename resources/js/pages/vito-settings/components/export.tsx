@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { DownloadIcon } from 'lucide-react';
 
-export default function ExportVito() {
+export default function ExportHitechCloudPanel() {
   const submit = () => {
-    window.open(route('vito-settings.export'), '_blank');
+    window.open(route('hitechcloudpanel-settings.export'), '_blank');
   };
 
   return (

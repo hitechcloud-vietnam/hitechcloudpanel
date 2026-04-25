@@ -130,12 +130,12 @@ abstract class TestCase extends BaseTestCase
         /** @var SourceControl $sourceControl */
         $sourceControl = SourceControl::factory()->github()->create();
         $this->site = Site::factory()->create([
-            'domain' => 'vito.test',
-            'aliases' => ['www.vito.test'],
+            'domain' => 'hitechcloudpanel.test',
+            'aliases' => ['www.hitechcloudpanel.test'],
             'server_id' => $this->server->id,
             'source_control_id' => $sourceControl->id,
             'repository' => 'organization/repository',
-            'path' => '/home/vito/vito.test',
+            'path' => '/home/hitechcloudpanel/hitechcloudpanel.test',
             'web_directory' => 'public',
             'branch' => 'main',
         ]);

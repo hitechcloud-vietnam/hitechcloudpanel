@@ -9,5 +9,5 @@ if ! sudo -u postgres psql -c "SELECT collname as collation,
     WHERE not pg_encoding_to_char(collencoding) = ''
     ORDER BY charset;";
 then
-    echo 'VITO_SSH_ERROR' && exit 1
+    echo 'HITECHCLOUDPANEL_SSH_ERROR' && exit 1
 fi

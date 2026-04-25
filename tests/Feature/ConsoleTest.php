@@ -17,7 +17,7 @@ class ConsoleTest extends TestCase
         $this->actingAs($this->user);
 
         $this->post(route('console.run', $this->server), [
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'command' => 'ls -la',
         ])->assertStreamedContent('fake output');
     }
@@ -27,7 +27,7 @@ class ConsoleTest extends TestCase
         $this->actingAs($this->user);
 
         $this->post(route('console.run', $this->server), [
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
         ])->assertSessionHasErrors('command');
 
         $this->post(route('console.run', $this->server), [

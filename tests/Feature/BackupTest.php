@@ -48,7 +48,7 @@ class BackupTest extends TestCase
             'type' => BackupType::FILE,
             'server_id' => $this->server->id,
             'storage_id' => $this->storageProvider->id,
-            'path' => '/home/vito/x.com',
+            'path' => '/home/hitechcloudpanel/x.com',
             'status' => BackupStatus::RUNNING,
         ]);
         $this->backupFile = BackupFile::factory()->create([
@@ -297,15 +297,15 @@ class BackupTest extends TestCase
         Bus::fake();
 
         app(RestoreBackup::class)->restore($this->backupFile, [
-            'path' => '/home/vito/restored-x.com',
-            'owner' => 'vito:vito',
+            'path' => '/home/hitechcloudpanel/restored-x.com',
+            'owner' => 'hitechcloudpanel:hitechcloudpanel',
             'permissions' => '755',
         ]);
 
         $this->backupFile->refresh();
 
         $this->assertEquals(BackupFileStatus::RESTORING, $this->backupFile->status);
-        $this->assertEquals('/home/vito/restored-x.com', $this->backupFile->restored_to);
+        $this->assertEquals('/home/hitechcloudpanel/restored-x.com', $this->backupFile->restored_to);
     }
 
     public function test_file_restore_dispatches_job(): void
@@ -313,8 +313,8 @@ class BackupTest extends TestCase
         Bus::fake();
 
         app(RestoreBackup::class)->restore($this->backupFile, [
-            'path' => '/home/vito/restored-x.com',
-            'owner' => 'vito:vito',
+            'path' => '/home/hitechcloudpanel/restored-x.com',
+            'owner' => 'hitechcloudpanel:hitechcloudpanel',
             'permissions' => '755',
         ]);
 
@@ -322,7 +322,7 @@ class BackupTest extends TestCase
         // and the restored_to field is populated
         $this->backupFile->refresh();
         $this->assertEquals(BackupFileStatus::RESTORING, $this->backupFile->status);
-        $this->assertEquals('/home/vito/restored-x.com', $this->backupFile->restored_to);
+        $this->assertEquals('/home/hitechcloudpanel/restored-x.com', $this->backupFile->restored_to);
     }
 
     public function test_database_restore_validation_requires_database(): void

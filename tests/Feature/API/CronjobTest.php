@@ -44,13 +44,13 @@ class CronjobTest extends TestCase
             'server' => $this->server,
         ]), [
             'command' => 'ls -la',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'frequency' => '* * * * *',
         ])
             ->assertSuccessful()
             ->assertJsonFragment([
                 'command' => 'ls -la',
-                'user' => 'vito',
+                'user' => 'hitechcloudpanel',
                 'frequency' => '* * * * *',
                 'status' => CronjobStatus::READY,
             ]);
@@ -65,7 +65,7 @@ class CronjobTest extends TestCase
         /** @var CronJob $cronjob */
         $cronjob = CronJob::factory()->create([
             'server_id' => $this->server->id,
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
         ]);
 
         $this->json('DELETE', route('api.projects.servers.cron-jobs.delete', [
@@ -87,7 +87,7 @@ class CronjobTest extends TestCase
             'server' => $this->server,
         ]), [
             'command' => 'ls -la',
-            'user' => 'vito',
+            'user' => 'hitechcloudpanel',
             'frequency' => '* * * * *',
             'site_id' => 99999, // Non-existent site ID
         ])

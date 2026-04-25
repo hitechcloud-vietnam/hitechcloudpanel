@@ -16,7 +16,7 @@ class UninstallTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_uninstall_vito_agent(): void
+    public function test_uninstall_hitechcloudpanel_agent(): void
     {
         SSH::fake();
 
@@ -24,7 +24,7 @@ class UninstallTest extends TestCase
 
         $service = Service::factory()->create([
             'server_id' => $this->server->id,
-            'name' => 'vito-agent',
+            'name' => 'hitechcloudpanel-agent',
             'type' => 'monitoring',
             'version' => 'latest',
             'status' => ServiceStatus::READY,

@@ -104,7 +104,7 @@ class ServiceConfigFileTest extends TestCase
 
         $service = Service::factory()->create([
             'server_id' => $this->server->id,
-            'name' => 'vito-agent',
+            'name' => 'hitechcloudpanel-agent',
             'type' => 'monitoring',
         ]);
 

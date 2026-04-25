@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "Updating Vito..."
+echo "Updating HiTechCloudPanel..."
 
-cd /home/vito/vito
+cd /home/hitechcloudpanel/hitechcloudpanel
 
 echo "Discarding any possible local changes..."
 git reset --hard HEAD
@@ -49,4 +49,4 @@ sudo supervisorctl restart worker:*
 
 bash scripts/post-update.sh
 
-echo "✅ Vito updated successfully to $NEW_RELEASE! 🎉"
+echo "✅ HiTechCloudPanel updated successfully to $NEW_RELEASE! 🎉"

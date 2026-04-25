@@ -29,7 +29,7 @@ class ServerTest extends TestCase
         $this->actingAs($this->user);
 
         Storage::fake();
-        SSH::fake('user_not_found'); // fake output for vito user check and service installations
+        SSH::fake('user_not_found'); // fake output for hitechcloudpanel user check and service installations
 
         $this->post(route('servers.store', [
             'provider' => Custom::id(),
@@ -694,16 +694,16 @@ class ServerTest extends TestCase
         ]);
     }
 
-    public function test_cannot_create_server_on_vito_server(): void
+    public function test_cannot_create_server_on_hitechcloudpanel_server(): void
     {
         $this->actingAs($this->user);
 
         Storage::fake();
-        SSH::fake('1000'); // Simulates vito user exists (returns user ID)
+        SSH::fake('1000'); // Simulates hitechcloudpanel user exists (returns user ID)
 
         $this->post(route('servers.store'), [
             'provider' => Custom::id(),
-            'name' => 'test-vito-server',
+            'name' => 'test-hitechcloudpanel-server',
             'ip' => '6.6.6.6',
             'port' => '22',
             'os' => OperatingSystem::UBUNTU22->value,
@@ -712,7 +712,7 @@ class ServerTest extends TestCase
             ->assertSessionHasErrors();
 
         $this->assertDatabaseMissing('servers', [
-            'name' => 'test-vito-server',
+            'name' => 'test-hitechcloudpanel-server',
         ]);
     }
 }

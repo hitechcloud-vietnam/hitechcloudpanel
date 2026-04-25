@@ -24,7 +24,7 @@ export default function Workflows() {
         <HeaderContainer>
           <Heading title="Workflows" description="Workflows are chained scripts that will run in the defined order" />
           <div className="flex items-center gap-2">
-            <a href="https://vitodeploy.com/docs/workflows" target="_blank">
+            <a href="https://docs.hitechcloud.one/docs/workflows" target="_blank">
               <Button variant="outline">
                 <BookOpenIcon />
                 <span className="hidden lg:block">Docs</span>
