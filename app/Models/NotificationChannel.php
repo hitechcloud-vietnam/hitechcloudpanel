@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Models;
+
+use App\Notifications\NotificationInterface;
+use Database\Factories\NotificationChannelFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
+
+/**
+ * @property int $id
+ * @property string $provider
+ * @property array<string, mixed> $data
+ * @property string $label
+ * @property bool $connected
+ * @property ?int $project_id
+ * @property int $user_id
+ * @property ?Project $project
+ * @property User $user
+ */
+class NotificationChannel extends AbstractModel
+{
+    /** @use HasFactory<NotificationChannelFactory> */
+    use HasFactory;
+
+    use Notifiable;
+
+    protected $fillable = [
+        'provider',
+        'label',
+        'data',
+        'connected',
+        'is_default',
+        'project_id',
+        'user_id',
+    ];
+
+    protected $casts = [
+        'project_id' => 'integer',
+        'data' => 'array',
+        'connected' => 'boolean',
+        'is_default' => 'boolean',
+        'user_id' => 'integer',
+    ];
+
+    public function provider(): \App\NotificationChannels\NotificationChannel
+    {
+        $class = config('notification-channel.providers.'.$this->provider.'.handler');
+
+        /** @var \App\NotificationChannels\NotificationChannel $provider */
+        $provider = new $class($this);
+
+        return $provider;
+    }
+
+    public static function notifyAll(NotificationInterface $notification): void
+    {
+        $channels = self::all();
+        foreach ($channels as $channel) {
+            $channel->notify($notification);
+        }
+    }
+
+    /**
+     * @return BelongsTo<Project, covariant $this>
+     */
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * @return BelongsTo<User, covariant $this>
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return Builder<NotificationChannel>
+     */
+    public static function getByProjectId(int $projectId, User $user): Builder
+    {
+        /** @var Builder<NotificationChannel> $query */
+        $query = static::query();
+
+        return $query
+            ->where('user_id', $user->id)
+            ->where(function (Builder $query) use ($projectId): void {
+                $query->where('project_id', $projectId)->orWhereNull('project_id');
+            });
+    }
+}

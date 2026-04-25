@@ -1,0 +1,28 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 1
+  project_id:
+    type: integer
+    nullable: true
+    example: 1
+  user_id:
+    type: integer
+    example: 1
+  global:
+    type: boolean
+    example: false
+    description: 'True if the storage provider is available globally (not project-specific)'
+  name:
+    type: string
+    example: 'AWS S3'
+  provider:
+    type: string
+    example: 's3'
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time

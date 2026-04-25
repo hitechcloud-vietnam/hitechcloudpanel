@@ -1,0 +1,50 @@
+import { Head, usePage } from '@inertiajs/react';
+import { Server } from '@/types/server';
+import Container from '@/components/container';
+import HeaderContainer from '@/components/header-container';
+import Heading from '@/components/heading';
+import { Button } from '@/components/ui/button';
+import ServerLayout from '@/layouts/server/layout';
+import { BookOpenIcon, PlusIcon } from 'lucide-react';
+import { Backup } from '@/types/backup';
+import { DataTable } from '@/components/data-table';
+import { columns } from '@/pages/backups/components/columns';
+import CreateBackup from '@/pages/backups/components/create-backup';
+import { PaginatedData } from '@/types';
+
+type Page = {
+  server: Server;
+  backups: PaginatedData<Backup>;
+};
+
+export default function Backups() {
+  const page = usePage<Page>();
+
+  return (
+    <ServerLayout>
+      <Head title={`Backups - ${page.props.server.name}`} />
+
+      <Container className="max-w-5xl">
+        <HeaderContainer>
+          <Heading title="Backups" description="Here you can manage database and file backups" />
+          <div className="flex items-center gap-2">
+            <a href="https://vitodeploy.com/docs/servers/database#backup" target="_blank">
+              <Button variant="outline">
+                <BookOpenIcon />
+                <span className="hidden lg:block">Docs</span>
+              </Button>
+            </a>
+            <CreateBackup server={page.props.server}>
+              <Button>
+                <PlusIcon />
+                <span className="hidden lg:block">Create</span>
+              </Button>
+            </CreateBackup>
+          </div>
+        </HeaderContainer>
+
+        <DataTable columns={columns} paginatedData={page.props.backups} />
+      </Container>
+    </ServerLayout>
+  );
+}

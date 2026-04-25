@@ -1,0 +1,28 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 1
+  project_id:
+    type: integer
+    nullable: true
+    example: 1
+  user_id:
+    type: integer
+    example: 1
+  global:
+    type: boolean
+    example: false
+    description: 'True if the source control is available globally (not project-specific)'
+  name:
+    type: string
+    example: 'GitHub'
+  provider:
+    type: string
+    example: 'github'
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
