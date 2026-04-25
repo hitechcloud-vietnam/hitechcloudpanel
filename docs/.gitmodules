@@ -1,6 +1,0 @@
-[submodule "agent"]
-	path = agent
-	url = https://github.com/hitechcloud-vietnam/agent.git
-[submodule "docs"]
-	path = docs
-	url = https://github.com/hitechcloud-vietnam/hitechcloudpannel-docs.git
