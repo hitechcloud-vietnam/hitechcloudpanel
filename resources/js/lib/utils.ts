@@ -21,6 +21,36 @@ export function mbToGb(mb: number | string): number {
   return Math.round((mb / 1024) * 100) / 100;
 }
 
+export function bytesToHuman(bytes: number | string, decimals = 2): string {
+  if (typeof bytes === 'string') {
+    bytes = parseFloat(bytes);
+  }
+
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return '0 B';
+  }
+
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+  const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+  const value = bytes / 1024 ** index;
+
+  return `${parseFloat(value.toFixed(decimals))} ${units[index]}`;
+}
+
+export function formatPercentage(value: number | string | null | undefined): string {
+  if (value === null || value === undefined || value === '') {
+    return 'N/A';
+  }
+
+  const numeric = typeof value === 'string' ? parseFloat(value) : value;
+
+  if (!Number.isFinite(numeric)) {
+    return 'N/A';
+  }
+
+  return `${numeric.toFixed(2)}%`;
+}
+
 export function formatDateString(dateString: string | Date): string {
   const date = new Date(dateString);
 

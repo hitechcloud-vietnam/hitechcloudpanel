@@ -26,7 +26,10 @@ export default function Show() {
       <Container className="max-w-5xl">
         <HeaderContainer>
           <Heading
-            title={page.props.metric.charAt(0).toUpperCase() + page.props.metric.slice(1)}
+            title={page.props.metric
+              .split('-')
+              .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+              .join(' ')}
             description={`You're viewing ${page.props.metric}'s metrics`}
           />
           <div className="flex items-center gap-2">

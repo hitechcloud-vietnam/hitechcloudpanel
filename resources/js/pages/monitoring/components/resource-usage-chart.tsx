@@ -11,7 +11,17 @@ import { cn } from '@/lib/utils';
 interface Props {
   title: string;
   color: string;
-  dataKey: 'load' | 'memory_used' | 'disk_used';
+  dataKey:
+    | 'load'
+    | 'cpu_usage'
+    | 'memory_used'
+    | 'disk_used'
+    | 'network_upstream'
+    | 'network_downstream'
+    | 'disk_read'
+    | 'disk_write'
+    | 'disk_tps'
+    | 'io_wait';
   label: string;
   chartData: Metric[];
   link: string;
@@ -37,7 +47,7 @@ export function ResourceUsageChart({ title, color, dataKey, label, chartData, li
               {chartData.length > 0
                 ? formatter
                   ? formatter(chartData[chartData.length - 1][dataKey], dataKey)
-                  : chartData[chartData.length - 1][dataKey].toLocaleString()
+                  : Number(chartData[chartData.length - 1][dataKey]).toLocaleString()
                 : 'N/A'}
             </span>
           </div>

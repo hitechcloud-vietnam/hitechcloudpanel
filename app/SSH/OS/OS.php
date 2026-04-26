@@ -323,12 +323,22 @@ class OS
 
         return [
             'load' => str($info)->after('load:')->before(PHP_EOL)->toString(),
+            'cpu_usage' => str($info)->after('cpu_usage:')->before(PHP_EOL)->toString(),
+            'cpu_cores' => str($info)->after('cpu_cores:')->before(PHP_EOL)->toString(),
             'memory_total' => str($info)->after('memory_total:')->before(PHP_EOL)->toString(),
             'memory_used' => str($info)->after('memory_used:')->before(PHP_EOL)->toString(),
             'memory_free' => str($info)->after('memory_free:')->before(PHP_EOL)->toString(),
             'disk_total' => str($info)->after('disk_total:')->before(PHP_EOL)->toString(),
             'disk_used' => str($info)->after('disk_used:')->before(PHP_EOL)->toString(),
             'disk_free' => str($info)->after('disk_free:')->before(PHP_EOL)->toString(),
+            'network_upstream' => str($info)->after('network_upstream:')->before(PHP_EOL)->toString(),
+            'network_downstream' => str($info)->after('network_downstream:')->before(PHP_EOL)->toString(),
+            'network_total_sent' => str($info)->after('network_total_sent:')->before(PHP_EOL)->toString(),
+            'network_total_received' => str($info)->after('network_total_received:')->before(PHP_EOL)->toString(),
+            'disk_read' => str($info)->after('disk_read:')->before(PHP_EOL)->toString(),
+            'disk_write' => str($info)->after('disk_write:')->before(PHP_EOL)->toString(),
+            'disk_tps' => str($info)->after('disk_tps:')->before(PHP_EOL)->toString(),
+            'io_wait' => str($info)->after('io_wait:')->before(PHP_EOL)->toString(),
         ];
     }
 

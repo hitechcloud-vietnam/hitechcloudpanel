@@ -16,12 +16,22 @@ class AgentController extends Controller
     {
         $validated = $this->validate($request, [
             'load' => 'required|numeric',
+            'cpu_usage' => 'nullable|numeric',
+            'cpu_cores' => 'nullable|integer',
             'memory_total' => 'required|numeric',
             'memory_used' => 'required|numeric',
             'memory_free' => 'required|numeric',
             'disk_total' => 'required|numeric',
             'disk_used' => 'required|numeric',
             'disk_free' => 'required|numeric',
+            'network_upstream' => 'nullable|numeric',
+            'network_downstream' => 'nullable|numeric',
+            'network_total_sent' => 'nullable|numeric',
+            'network_total_received' => 'nullable|numeric',
+            'disk_read' => 'nullable|numeric',
+            'disk_write' => 'nullable|numeric',
+            'disk_tps' => 'nullable|numeric',
+            'io_wait' => 'nullable|numeric',
         ]);
 
         /** @var Service $service */

@@ -11,9 +11,10 @@ import Filter from '@/pages/monitoring/components/filter';
 import { useState } from 'react';
 import { Metric, MetricsFilter } from '@/types/metric';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { kbToGb, mbToGb } from '@/lib/utils';
+import { bytesToHuman, formatPercentage, kbToGb, mbToGb } from '@/lib/utils';
 import Actions from '@/pages/monitoring/components/actions';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import OverviewMetricCard from '@/pages/monitoring/components/overview-metric-card';
 
 export default function Monitoring() {
   const page = usePage<{
@@ -60,7 +61,34 @@ export default function Monitoring() {
 
         <MetricsCards server={page.props.server} filter={filter} />
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <OverviewMetricCard
+            title="CPU"
+            value={page.props.lastMetric ? formatPercentage(page.props.lastMetric.cpu_usage) : 'N/A'}
+            description={page.props.lastMetric ? `${page.props.lastMetric.cpu_cores ?? 'N/A'} cores · load ${page.props.lastMetric.load}` : 'Realtime CPU'}
+            accentClassName="bg-chart-4"
+          />
+          <OverviewMetricCard
+            title="RAM"
+            value={page.props.lastMetric ? `${kbToGb(page.props.lastMetric.memory_used)} GB` : 'N/A'}
+            description={page.props.lastMetric ? `${kbToGb(page.props.lastMetric.memory_free)} GB free / ${kbToGb(page.props.lastMetric.memory_total)} GB total` : 'Realtime RAM'}
+            accentClassName="bg-chart-2"
+          />
+          <OverviewMetricCard
+            title="Network"
+            value={page.props.lastMetric ? `${bytesToHuman(page.props.lastMetric.network_downstream)}/s` : 'N/A'}
+            description={page.props.lastMetric ? `Up ${bytesToHuman(page.props.lastMetric.network_upstream)}/s · Down ${bytesToHuman(page.props.lastMetric.network_downstream)}/s` : 'Realtime traffic'}
+            accentClassName="bg-chart-5"
+          />
+          <OverviewMetricCard
+            title="Load"
+            value={page.props.lastMetric ? String(page.props.lastMetric.load ?? 'N/A') : 'N/A'}
+            description={page.props.lastMetric ? `IO wait ${formatPercentage(page.props.lastMetric.io_wait)}` : 'Realtime load'}
+            accentClassName="bg-chart-1"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
           <Card>
             <CardHeader>
               <CardTitle>Memory details</CardTitle>
@@ -98,6 +126,46 @@ export default function Monitoring() {
               <div className="flex items-center justify-between p-4">
                 <span>Total</span>
                 <span>{page.props.lastMetric ? mbToGb(page.props.lastMetric.disk_total) + ' GB' : 'N/A'}</span>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Traffic & Disk I/O</CardTitle>
+              <CardDescription className="sr-only">Traffic and disk io details</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between border-b p-4">
+                <span>Upstream</span>
+                <span>{page.props.lastMetric ? `${bytesToHuman(page.props.lastMetric.network_upstream)}/s` : 'N/A'}</span>
+              </div>
+              <div className="flex items-center justify-between border-b p-4">
+                <span>Downstream</span>
+                <span>{page.props.lastMetric ? `${bytesToHuman(page.props.lastMetric.network_downstream)}/s` : 'N/A'}</span>
+              </div>
+              <div className="flex items-center justify-between border-b p-4">
+                <span>Total sent</span>
+                <span>{page.props.lastMetric ? bytesToHuman(page.props.lastMetric.network_total_sent) : 'N/A'}</span>
+              </div>
+              <div className="flex items-center justify-between border-b p-4">
+                <span>Total received</span>
+                <span>{page.props.lastMetric ? bytesToHuman(page.props.lastMetric.network_total_received) : 'N/A'}</span>
+              </div>
+              <div className="flex items-center justify-between border-b p-4">
+                <span>Read</span>
+                <span>{page.props.lastMetric ? `${bytesToHuman(page.props.lastMetric.disk_read)}/s` : 'N/A'}</span>
+              </div>
+              <div className="flex items-center justify-between border-b p-4">
+                <span>Write</span>
+                <span>{page.props.lastMetric ? `${bytesToHuman(page.props.lastMetric.disk_write)}/s` : 'N/A'}</span>
+              </div>
+              <div className="flex items-center justify-between border-b p-4">
+                <span>TPS</span>
+                <span>{page.props.lastMetric ? page.props.lastMetric.disk_tps : 'N/A'}</span>
+              </div>
+              <div className="flex items-center justify-between p-4">
+                <span>IO Wait</span>
+                <span>{page.props.lastMetric ? formatPercentage(page.props.lastMetric.io_wait) : 'N/A'}</span>
               </div>
             </CardContent>
           </Card>
