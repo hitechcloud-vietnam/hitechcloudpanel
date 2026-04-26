@@ -17,6 +17,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 #[Middleware(['auth', 'has-project'])]
 class ConsoleController extends Controller
 {
+    private function cacheKey(Server $server, string $user): string
+    {
+        return 'console.'.$server->id.'.'.$user.'.dir';
+    }
+
     #[Post('/run', name: 'console.run')]
     public function run(Server $server, Request $request): StreamedResponse
     {
@@ -30,17 +35,14 @@ class ConsoleController extends Controller
             'command' => 'required|string',
         ]);
 
-        $ssh = $server->ssh($request->user);
+        $user = $request->string('user')->toString();
+        $ssh = $server->ssh($user);
         $log = 'console-'.time();
 
-        $user = $request->input('user');
-        $currentDir = $user == 'root' ? '/root' : '/home/'.$user;
-        if (Cache::has('console.'.$server->id.'.dir')) {
-            $currentDir = Cache::get('console.'.$server->id.'.dir');
-        }
+        $currentDir = Cache::get($this->cacheKey($server, $user), home_path($user));
 
         return response()->stream(
-            function () use ($server, $request, $ssh, $log, $currentDir): void {
+            function () use ($server, $request, $ssh, $log, $currentDir, $user): void {
                 $command = 'cd '.$currentDir.' && '.$request->command.' && echo -n "HITECHCLOUDPANEL_WORKING_DIR: " && pwd';
                 $output = '';
                 $ssh->exec(command: $command, log: $log, stream: true, streamCallback: function (string $out) use (&$output): void {
@@ -51,7 +53,7 @@ class ConsoleController extends Controller
                 });
                 // extract the working dir and put it in the session
                 if (preg_match('/HITECHCLOUDPANEL_WORKING_DIR: (.*)/', $output, $matches)) {
-                    Cache::put('console.'.$server->id.'.dir', $matches[1]);
+                    Cache::put($this->cacheKey($server, $user), $matches[1]);
                 }
             },
             200,
@@ -64,19 +66,37 @@ class ConsoleController extends Controller
     }
 
     #[Get('/working-dir', name: 'console.working-dir')]
-    public function workingDir(Server $server): JsonResponse
+    public function workingDir(Server $server, Request $request): JsonResponse
     {
+        $validated = $request->validate([
+            'user' => ['nullable', Rule::in($server->getSshUsers())],
+        ]);
+
+        $user = $validated['user'] ?? $server->getSshUser();
+
         return response()->json([
-            'dir' => Cache::get('console.'.$server->id.'.dir', '~'),
+            'dir' => Cache::get($this->cacheKey($server, $user), home_path($user)),
         ]);
     }
 
     #[Get('/new-session', name: 'console.new-session')]
-    public function newSession(Server $server): JsonResponse
+    public function newSession(Server $server, Request $request): JsonResponse
     {
         $this->authorize('update', $server);
 
-        Cache::forget('console.'.$server->id.'.dir');
+        $validated = $request->validate([
+            'user' => ['nullable', Rule::in($server->getSshUsers())],
+            'dir' => ['nullable', 'string'],
+        ]);
+
+        $user = $validated['user'] ?? $server->getSshUser();
+        $cacheKey = $this->cacheKey($server, $user);
+
+        Cache::forget($cacheKey);
+
+        if (isset($validated['dir']) && $validated['dir'] !== '') {
+            Cache::put($cacheKey, $validated['dir']);
+        }
 
         return response()->json(['status' => 'ok']);
     }

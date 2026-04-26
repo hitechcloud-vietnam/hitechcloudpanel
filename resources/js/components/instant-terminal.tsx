@@ -20,7 +20,17 @@ interface TerminalState {
   serverId: number;
 }
 
-export default function InstantTerminal({ server, children }: { server: Server; children: ReactNode }) {
+export default function InstantTerminal({
+  server,
+  children,
+  initialUser,
+  initialDir,
+}: {
+  server: Server;
+  children: ReactNode;
+  initialUser?: string;
+  initialDir?: string;
+}) {
   const page = usePage<{ csrf_token: string }>();
   const [open, setOpen] = useState(false);
 
@@ -56,8 +66,8 @@ export default function InstantTerminal({ server, children }: { server: Server; 
 
   // Local state for terminal
   const [isExpanded, setIsExpanded] = useState(savedState?.isExpanded || false);
-  const [user, setUser] = useState(savedState?.user || server.ssh_user);
-  const [dir, setDir] = useState(savedState?.dir || '~');
+  const [user, setUser] = useState(initialUser || savedState?.user || server.ssh_user);
+  const [dir, setDir] = useState(initialDir || savedState?.dir || '~');
   const [output, setOutput] = useState(savedState?.output || '');
   const [shellPrefix, setShellPrefix] = useState(savedState?.shellPrefix || '');
   const [commandHistory, setCommandHistory] = useState<string[]>(savedState?.commandHistory || []);
@@ -84,7 +94,7 @@ export default function InstantTerminal({ server, children }: { server: Server; 
   const getWorkingDir = useCallback(
     async (currentUser: string) => {
       try {
-        const response = await fetch(route('console.working-dir', { server: server.id }));
+        const response = await fetch(route('console.working-dir', { server: server.id, user: currentUser }));
         if (response.ok) {
           const data = await response.json();
           setDir(data.dir);
@@ -114,6 +124,14 @@ export default function InstantTerminal({ server, children }: { server: Server; 
   }, [running]);
 
   const initialize = useCallback(async () => {
+    if (initialDir) {
+      await fetch(route('console.new-session', { server: server.id, user, dir: initialDir }), {});
+      setDir(initialDir);
+      updateShellPrefixCallback(user, initialDir);
+      focusCommand();
+      return;
+    }
+
     const currentDir = await getWorkingDir(user);
     updateShellPrefixCallback(user, currentDir);
     focusCommand();
@@ -134,7 +152,7 @@ export default function InstantTerminal({ server, children }: { server: Server; 
     return () => {
       outputRef.current?.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [user, updateShellPrefixCallback, getWorkingDir]);
+  }, [user, updateShellPrefixCallback, getWorkingDir, initialDir, server.id]);
 
   const handleUserChange = async (newUser: string) => {
     setUser(newUser);
@@ -233,7 +251,7 @@ export default function InstantTerminal({ server, children }: { server: Server; 
   };
 
   const newSession = async () => {
-    await fetch(route('console.new-session', { server: server.id }), {});
+    await fetch(route('console.new-session', { server: server.id, user }), {});
     getWorkingDir(user);
     clearOutputCallback();
   };

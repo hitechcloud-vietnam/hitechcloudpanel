@@ -53,7 +53,7 @@ OUT);
     {
         $this->actingAs($this->user);
 
-        SSH::fake();
+        $sshFake = SSH::fake();
 
         $this->post(route('server-files.directories.store', ['server' => $this->server]), [
             'server_user' => $this->server->getSshUser(),
@@ -61,14 +61,14 @@ OUT);
             'name' => 'releases',
         ])->assertSessionDoesntHaveErrors();
 
-        SSH::fake()->assertExecutedContains('mkdir -p /home/'.$this->server->getSshUser().'/releases');
+        $sshFake->assertExecutedContains('mkdir -p /home/'.$this->server->getSshUser().'/releases');
     }
 
     public function test_create_and_update_file(): void
     {
         $this->actingAs($this->user);
 
-        SSH::fake();
+        $sshFake = SSH::fake();
 
         $this->post(route('server-files.store', ['server' => $this->server]), [
             'server_user' => $this->server->getSshUser(),
@@ -77,7 +77,7 @@ OUT);
             'content' => 'initial content',
         ])->assertSessionDoesntHaveErrors();
 
-        SSH::fake()->assertExecutedContains('/home/'.$this->server->getSshUser().'/notes.txt');
+        $sshFake->assertExecutedContains('/home/'.$this->server->getSshUser().'/notes.txt');
 
         $this->patch(route('server-files.update', ['server' => $this->server]), [
             'server_user' => $this->server->getSshUser(),
@@ -85,14 +85,14 @@ OUT);
             'content' => 'updated content',
         ])->assertSessionDoesntHaveErrors();
 
-        SSH::fake()->assertExecutedContains('/home/'.$this->server->getSshUser().'/notes.txt');
+        $sshFake->assertExecutedContains('/home/'.$this->server->getSshUser().'/notes.txt');
     }
 
     public function test_delete_file(): void
     {
         $this->actingAs($this->user);
 
-        SSH::fake();
+        $sshFake = SSH::fake();
 
         $file = File::factory()->create([
             'user_id' => $this->user->id,
@@ -108,7 +108,33 @@ OUT);
             'file' => $file,
         ]))->assertSessionDoesntHaveErrors();
 
-        SSH::fake()->assertExecutedContains('rm -rf /home/'.$this->server->getSshUser().'/notes.txt');
+        $sshFake->assertExecutedContains('rm -rf /home/'.$this->server->getSshUser().'/notes.txt');
         $this->assertDatabaseMissing('files', ['id' => $file->id]);
+    }
+
+    public function test_create_directory_validates_required_fields(): void
+    {
+        $this->actingAs($this->user);
+
+        SSH::fake();
+
+        $this->post(route('server-files.directories.store', ['server' => $this->server]), [
+            'server_user' => $this->server->getSshUser(),
+            'path' => '/home/'.$this->server->getSshUser(),
+            'name' => '',
+        ])->assertSessionHasErrors(['name']);
+    }
+
+    public function test_create_directory_rejects_path_outside_selected_user_home(): void
+    {
+        $this->actingAs($this->user);
+
+        SSH::fake();
+
+        $this->post(route('server-files.directories.store', ['server' => $this->server]), [
+            'server_user' => $this->server->getSshUser(),
+            'path' => '/etc',
+            'name' => 'restricted',
+        ])->assertSessionHasErrors(['path']);
     }
 }

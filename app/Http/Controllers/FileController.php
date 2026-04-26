@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -61,11 +62,15 @@ class FileController extends Controller
         $this->authorize('view', $server);
 
         $validated = Validator::make($request->all(), [
+            'server_user' => ['nullable', 'string', Rule::in($server->getSshUsers())],
             'path' => ['required', 'string'],
         ])->validate();
 
+        $serverUser = $validated['server_user'] ?? $server->getSshUser();
+        $path = $this->normalizePath($validated['path'], $serverUser);
+
         return response()->json([
-            'content' => $server->os()->readFile($validated['path']),
+            'content' => $server->os()->readFile($path),
         ]);
     }
 
@@ -77,10 +82,10 @@ class FileController extends Controller
         $validated = Validator::make($request->all(), [
             'server_user' => ['required', 'string', Rule::in($server->getSshUsers())],
             'path' => ['required', 'string'],
-            'name' => ['required', 'string', 'max:255', 'regex:/^[^\/]+$/'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[^\/]+$/', 'not_in:.,..'],
         ])->validate();
 
-        $directoryPath = absolute_path($validated['path'].'/'.$validated['name']);
+        $directoryPath = $this->normalizePath($validated['path'].'/'.$validated['name'], $validated['server_user']);
         $server->os()->mkdir($directoryPath, $validated['server_user']);
 
         return back()->with('success', 'Directory created successfully.');
@@ -94,11 +99,11 @@ class FileController extends Controller
         $validated = Validator::make($request->all(), [
             'server_user' => ['required', 'string', Rule::in($server->getSshUsers())],
             'path' => ['required', 'string'],
-            'name' => ['required', 'string', 'max:255', 'regex:/^[^\/]+$/'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[^\/]+$/', 'not_in:.,..'],
             'content' => ['nullable', 'string'],
         ])->validate();
 
-        $filePath = absolute_path($validated['path'].'/'.$validated['name']);
+        $filePath = $this->normalizePath($validated['path'].'/'.$validated['name'], $validated['server_user']);
         $server->os()->write($filePath, $validated['content'] ?? '', $validated['server_user']);
 
         return back()->with('success', 'File created successfully.');
@@ -115,7 +120,7 @@ class FileController extends Controller
             'content' => ['required', 'string'],
         ])->validate();
 
-        $server->os()->write($validated['path'], $validated['content'], $validated['server_user']);
+        $server->os()->write($this->normalizePath($validated['path'], $validated['server_user']), $validated['content'], $validated['server_user']);
 
         return back()->with('success', 'File updated successfully.');
     }
@@ -157,6 +162,33 @@ class FileController extends Controller
             return home_path($serverUser);
         }
 
-        return absolute_path($path);
+        return $this->normalizePath($path, $serverUser);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    private function normalizePath(string $path, string $serverUser): string
+    {
+        $normalized = absolute_path($path);
+        $homePath = home_path($serverUser);
+
+        if ($serverUser === 'root') {
+            return $normalized;
+        }
+
+        if (! str_starts_with($normalized, '/')) {
+            throw ValidationException::withMessages([
+                'path' => 'The path must be absolute.',
+            ]);
+        }
+
+        if ($normalized !== $homePath && ! str_starts_with($normalized, $homePath.'/')) {
+            throw ValidationException::withMessages([
+                'path' => 'The path must be inside the selected user home directory.',
+            ]);
+        }
+
+        return $normalized;
     }
 }

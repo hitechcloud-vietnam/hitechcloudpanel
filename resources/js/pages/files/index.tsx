@@ -33,6 +33,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAppearance } from '@/hooks/use-appearance';
 import Refresh from '@/components/refresh';
 import { FormEvent } from 'react';
+import InstantTerminal from '@/components/instant-terminal';
+import { TerminalSquareIcon } from 'lucide-react';
 
 type Page = {
   server: Server;
@@ -73,7 +75,7 @@ function CreateDirectoryDialog({ server, currentPath, serverUser }: { server: Se
           <DialogTitle>Create folder</DialogTitle>
           <DialogDescription>Create a new directory in the current path.</DialogDescription>
         </DialogHeader>
-        <Form className="space-y-4" onSubmit={submit}>
+        <Form id="create-directory-form" className="space-y-4" onSubmit={submit}>
           <div className="space-y-2">
             <Label htmlFor="directory-name">Folder name</Label>
             <Input id="directory-name" value={form.data.name} onChange={(e) => form.setData('name', e.target.value)} />
@@ -84,7 +86,7 @@ function CreateDirectoryDialog({ server, currentPath, serverUser }: { server: Se
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit" disabled={form.processing}>
+          <Button form="create-directory-form" type="submit" disabled={form.processing}>
             {form.processing && <LoaderCircleIcon className="animate-spin" />}
             Create
           </Button>
@@ -127,7 +129,7 @@ function CreateFileDialog({ server, currentPath, serverUser }: { server: Server;
           <DialogTitle>Create file</DialogTitle>
           <DialogDescription>Create a new file in the current path.</DialogDescription>
         </DialogHeader>
-        <Form className="space-y-4" onSubmit={submit}>
+        <Form id="create-file-form" className="space-y-4" onSubmit={submit}>
           <div className="space-y-2">
             <Label htmlFor="file-name">File name</Label>
             <Input id="file-name" value={form.data.name} onChange={(e) => form.setData('name', e.target.value)} />
@@ -148,7 +150,7 @@ function CreateFileDialog({ server, currentPath, serverUser }: { server: Server;
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit" disabled={form.processing}>
+          <Button form="create-file-form" type="submit" disabled={form.processing}>
             {form.processing && <LoaderCircleIcon className="animate-spin" />}
             Create
           </Button>
@@ -313,6 +315,12 @@ export default function Files() {
               </SelectContent>
             </Select>
             <Refresh />
+            <InstantTerminal server={page.props.server} initialUser={page.props.serverUser} initialDir={page.props.currentPath}>
+              <Button variant="outline">
+                <TerminalSquareIcon />
+                Terminal here
+              </Button>
+            </InstantTerminal>
             <CreateDirectoryDialog server={page.props.server} currentPath={page.props.currentPath} serverUser={page.props.serverUser} />
             <CreateFileDialog server={page.props.server} currentPath={page.props.currentPath} serverUser={page.props.serverUser} />
           </div>
