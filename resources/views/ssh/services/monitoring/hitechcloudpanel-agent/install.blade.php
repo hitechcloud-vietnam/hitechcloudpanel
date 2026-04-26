@@ -1,22 +1,24 @@
 arch=$(uname -m)
 
 if [ "$arch" == "x86_64" ]; then
-    executable="hitechcloudpanelagent-linux-amd64"
-elif [ "$arch" == "i686" ]; then
-    executable="hitechcloudpanelagent-linux-amd"
+    asset="hitechcloudpanel-linux-amd64"
+elif [ "$arch" == "i686" ] || [ "$arch" == "i386" ]; then
+    asset="hitechcloudpanel-linux-386"
 elif [ "$arch" == "armv7l" ]; then
-    executable="hitechcloudpanelagent-linux-arm"
+    asset="hitechcloudpanel-linux-arm"
 elif [ "$arch" == "aarch64" ]; then
-    executable="hitechcloudpanelagent-linux-arm64"
+    asset="hitechcloudpanel-linux-arm64"
 else
-    executable="hitechcloudpanelagent-linux-amd64"
+    asset="hitechcloudpanel-linux-amd64"
 fi
 
-wget {{ $downloadUrl }}/$executable
+wget {{ $downloadUrl }}/${asset}.tar.gz
 
-chmod +x ./$executable
+tar -xzf ./${asset}.tar.gz
 
-sudo mv ./$executable /usr/local/bin/hitechcloudpanel-agent
+chmod +x ./$asset
+
+sudo mv ./$asset /usr/local/bin/hitechcloudpanel-agent
 
 export HITECHCLOUDPANELAGENT_SERVICE="
 [Unit]
