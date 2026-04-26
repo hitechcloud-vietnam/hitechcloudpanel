@@ -41,6 +41,11 @@ class RegisterSiteFeature
         $features = config('site.types.'.$this->type.'.features') ?? [];
 
         if (isset($features[$this->name])) {
+            if (($features[$this->name]['label'] ?? '') === $this->label
+                && ($features[$this->name]['description'] ?? '') === $this->description) {
+                return;
+            }
+
             throw new RuntimeException("Feature '{$this->name}' already exists for type '{$this->type}'");
         }
 

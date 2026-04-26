@@ -51,6 +51,12 @@ class RegisterServerFeatureAction
 
         $actions = $feature['actions'] ?? [];
         if (isset($actions[$this->name])) {
+            if (($actions[$this->name]['label'] ?? '') === $this->label
+                && ($actions[$this->name]['handler'] ?? '') === $this->handler
+                && ($actions[$this->name]['form'] ?? []) === ($this->form ? $this->form->toArray() : [])) {
+                return;
+            }
+
             throw new RuntimeException("Action '{$this->name}' already exists for feature '{$this->feature}'");
         }
 

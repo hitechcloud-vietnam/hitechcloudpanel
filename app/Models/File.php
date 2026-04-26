@@ -102,6 +102,7 @@ class File extends AbstractModel
         self::query()
             ->where('user_id', $user->id)
             ->where('server_id', $server->id)
+            ->where('server_user', $serverUser)
             ->delete();
 
         // Split output by line
@@ -143,7 +144,7 @@ class File extends AbstractModel
 
     public function getFilePath(): string
     {
-        return $this->path.'/'.$this->name;
+        return absolute_path($this->path.'/'.$this->name);
     }
 
     public function isExtractable(): bool

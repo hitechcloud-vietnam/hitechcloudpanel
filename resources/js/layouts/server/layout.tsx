@@ -9,6 +9,7 @@ import {
   CommandIcon,
   DatabaseIcon,
   FlameIcon,
+  FolderTreeIcon,
   HomeIcon,
   KeyIcon,
   ListEndIcon,
@@ -193,6 +194,12 @@ export default function ServerLayout({ children }: { children: ReactNode }) {
       title: 'Monitoring',
       href: route('monitoring', { server: page.props.server.id }),
       icon: ChartLineIcon,
+      isDisabled: isMenuDisabled,
+    },
+    {
+      title: 'Files',
+      href: route('server-files', { server: page.props.server.id }),
+      icon: FolderTreeIcon,
       isDisabled: isMenuDisabled,
     },
     {
