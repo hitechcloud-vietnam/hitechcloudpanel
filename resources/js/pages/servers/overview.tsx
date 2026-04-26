@@ -7,10 +7,10 @@ import Container from '@/components/container';
 import Heading from '@/components/heading';
 import { PaginatedData } from '@/types';
 import MetricsCards from '@/pages/monitoring/components/metrics-cards';
-import { useQuery } from '@tanstack/react-query';
 import { Metric } from '@/types/metric';
 import OverviewMetricCard from '@/pages/monitoring/components/overview-metric-card';
 import { bytesToHuman, formatPercentage, kbToGb } from '@/lib/utils';
+import { useMonitoringStream } from '@/hooks/use-monitoring-stream';
 
 export default function ServerOverview() {
   const page = usePage<{
@@ -18,21 +18,14 @@ export default function ServerOverview() {
     logs: PaginatedData<ServerLog>;
   }>();
 
-  const realtime = useQuery<Metric>({
-    queryKey: ['monitoring-realtime', page.props.server.id],
-    queryFn: async () => {
-      const response = await fetch(route('monitoring.realtime', { server: page.props.server.id }));
-      if (!response.ok) {
-        throw new Error('Failed to fetch realtime metrics');
-      }
-
-      return response.json();
-    },
-    refetchInterval: 15000,
-    retry: false,
-  });
-
-  const metric = realtime.data;
+  const realtime = useMonitoringStream(route('monitoring.stream', { server: page.props.server.id }));
+  const metric: Metric | null = realtime.metric;
+  const memoryUsed = metric?.memory_used ?? 0;
+  const memoryTotal = metric?.memory_total ?? 0;
+  const networkDownstream = metric?.network_downstream ?? 0;
+  const networkUpstream = metric?.network_upstream ?? 0;
+  const diskRead = metric?.disk_read ?? 0;
+  const diskWrite = metric?.disk_write ?? 0;
 
   return (
     <Container className="max-w-5xl">
@@ -46,14 +39,14 @@ export default function ServerOverview() {
         />
         <OverviewMetricCard
           title="RAM"
-          value={metric ? `${kbToGb(metric.memory_used)} GB` : 'N/A'}
-          description={metric ? `${kbToGb(metric.memory_total)} GB total` : 'Realtime memory'}
+          value={metric ? `${kbToGb(memoryUsed)} GB` : 'N/A'}
+          description={metric ? `${kbToGb(memoryTotal)} GB total` : 'Realtime memory'}
           accentClassName="bg-chart-2"
         />
         <OverviewMetricCard
           title="Network"
-          value={metric ? `${bytesToHuman(metric.network_downstream)}/s` : 'N/A'}
-          description={metric ? `Up ${bytesToHuman(metric.network_upstream)}/s` : 'Realtime traffic'}
+          value={metric ? `${bytesToHuman(networkDownstream)}/s` : 'N/A'}
+          description={metric ? `Up ${bytesToHuman(networkUpstream)}/s` : 'Realtime traffic'}
           accentClassName="bg-chart-5"
         />
         <OverviewMetricCard
@@ -64,8 +57,8 @@ export default function ServerOverview() {
         />
         <OverviewMetricCard
           title="Disk I/O"
-          value={metric ? `${bytesToHuman(metric.disk_read)}/s` : 'N/A'}
-          description={metric ? `Write ${bytesToHuman(metric.disk_write)}/s · TPS ${metric.disk_tps ?? 'N/A'}` : 'Realtime disk io'}
+          value={metric ? `${bytesToHuman(diskRead)}/s` : 'N/A'}
+          description={metric ? `Write ${bytesToHuman(diskWrite)}/s · TPS ${metric.disk_tps ?? 'N/A'}` : 'Realtime disk io'}
           accentClassName="bg-chart-3"
         />
       </div>

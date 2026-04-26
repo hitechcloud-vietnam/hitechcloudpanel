@@ -33,7 +33,8 @@ export default function MetricsCards({ server, filter, metric }: { server: Serve
             <>
               <Skeleton className="h-[510px] w-full rounded-xl border shadow-xs" />
               {(metric === 'traffic' || metric === 'disk-io') && <Skeleton className="h-[510px] w-full rounded-xl border shadow-xs" />}
-              {metric === 'disk-io' && <Skeleton className="h-[510px] w-full rounded-xl border shadow-xs" />}
+              {(metric === 'traffic' || metric === 'disk-io') && <Skeleton className="h-[510px] w-full rounded-xl border shadow-xs" />}
+              {(metric === 'traffic' || metric === 'disk-io') && <Skeleton className="h-[510px] w-full rounded-xl border shadow-xs" />}
             </>
           ) : (
             <>
@@ -110,16 +111,38 @@ export default function MetricsCards({ server, filter, metric }: { server: Serve
             />
           )}
           {metric === 'traffic' && (
-            <ResourceUsageChart
-              title="Downstream Traffic"
-              label="Downstream traffic"
-              dataKey="network_downstream"
-              color="var(--color-chart-2)"
-              chartData={query.data}
-              link={route('monitoring.show', { server: server.id, metric: 'traffic' })}
-              formatter={(value) => `${bytesToHuman(value as number)}/s`}
-              single
-            />
+            <>
+              <ResourceUsageChart
+                title="Downstream Traffic"
+                label="Downstream traffic"
+                dataKey="network_downstream"
+                color="var(--color-chart-2)"
+                chartData={query.data}
+                link={route('monitoring.show', { server: server.id, metric: 'traffic' })}
+                formatter={(value) => `${bytesToHuman(value as number)}/s`}
+                single
+              />
+              <ResourceUsageChart
+                title="Total Sent"
+                label="Total sent"
+                dataKey="network_total_sent"
+                color="var(--color-chart-3)"
+                chartData={query.data}
+                link={route('monitoring.show', { server: server.id, metric: 'traffic' })}
+                formatter={(value) => bytesToHuman(value as number)}
+                single
+              />
+              <ResourceUsageChart
+                title="Total Received"
+                label="Total received"
+                dataKey="network_total_received"
+                color="var(--color-chart-4)"
+                chartData={query.data}
+                link={route('monitoring.show', { server: server.id, metric: 'traffic' })}
+                formatter={(value) => bytesToHuman(value as number)}
+                single
+              />
+            </>
           )}
           {(!metric || metric === 'disk-io') && (
             <ResourceUsageChart
@@ -153,6 +176,16 @@ export default function MetricsCards({ server, filter, metric }: { server: Serve
                 chartData={query.data}
                 link={route('monitoring.show', { server: server.id, metric: 'disk-io' })}
                 formatter={(value) => formatPercentage(value as number)}
+                single
+              />
+              <ResourceUsageChart
+                title="Disk TPS"
+                label="Disk tps"
+                dataKey="disk_tps"
+                color="var(--color-chart-3)"
+                chartData={query.data}
+                link={route('monitoring.show', { server: server.id, metric: 'disk-io' })}
+                formatter={(value) => Number(value ?? 0).toLocaleString()}
                 single
               />
             </>

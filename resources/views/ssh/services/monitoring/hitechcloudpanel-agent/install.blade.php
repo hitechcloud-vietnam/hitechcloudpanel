@@ -1,3 +1,5 @@
+set -euo pipefail
+
 arch=$(uname -m)
 
 if [ "$arch" == "x86_64" ]; then
@@ -12,24 +14,27 @@ else
     asset="hitechcloudpanel-linux-amd64"
 fi
 
-wget {{ $downloadUrl }}/${asset}.tar.gz
+wget -O ./${asset}.tar.gz {{ $downloadUrl }}/${asset}.tar.gz
 
 tar -xzf ./${asset}.tar.gz
 
 chmod +x ./$asset
 
 sudo mv ./$asset /usr/local/bin/hitechcloudpanel-agent
+sudo mkdir -p /var/log/hitechcloudpanel-agent
 
 export HITECHCLOUDPANELAGENT_SERVICE="
 [Unit]
 Description=HitechCloudPanel Agent
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
 User=root
 ExecStart=/usr/local/bin/hitechcloudpanel-agent
 Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target

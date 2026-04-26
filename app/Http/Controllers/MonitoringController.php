@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -68,6 +69,56 @@ class MonitoringController extends Controller
                 $this->normalizeRealtimeMetric($server->metrics()->latest()->first()),
             );
         }
+    }
+
+    #[Get('/stream', name: 'monitoring.stream')]
+    public function stream(Server $server): StreamedResponse
+    {
+        $this->authorize('viewAny', [Metric::class, $server]);
+
+        return response()->stream(function () use ($server): void {
+            ignore_user_abort(true);
+            @set_time_limit(0);
+
+            echo "retry: 3000\n\n";
+
+            $lastMetricId = null;
+
+            for ($iteration = 0; $iteration < $this->streamMaxIterations(); $iteration++) {
+                if (connection_aborted()) {
+                    break;
+                }
+
+                try {
+                    $monitoring = $server->monitoring();
+
+                    if ($monitoring?->name === RemoteMonitor::id()) {
+                        $this->sendStreamEvent('metric', $this->normalizeRealtimeMetric($server->os()->resourceInfo()));
+                    } else {
+                        $latestMetric = $server->metrics()->latest()->first();
+                        $currentMetricId = $latestMetric?->id;
+
+                        if ($currentMetricId !== $lastMetricId || $iteration === 0) {
+                            $this->sendStreamEvent('metric', $this->normalizeRealtimeMetric($latestMetric));
+                            $lastMetricId = $currentMetricId;
+                        } else {
+                            $this->sendStreamEvent('ping', [
+                                'date' => now()->toIso8601String(),
+                            ]);
+                        }
+                    }
+                } catch (Throwable) {
+                    $this->sendStreamEvent('metric', $this->normalizeRealtimeMetric($server->metrics()->latest()->first()));
+                }
+
+                usleep($this->streamSleepMicroseconds());
+            }
+        }, 200, [
+            'Cache-Control' => 'no-cache',
+            'Connection' => 'keep-alive',
+            'X-Accel-Buffering' => 'no',
+            'Content-Type' => 'text/event-stream',
+        ]);
     }
 
     #[Get('/{metric}', name: 'monitoring.show')]
@@ -183,5 +234,38 @@ class MonitoringController extends Controller
             : null;
 
         return $normalized;
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function sendStreamEvent(string $event, array $payload): void
+    {
+        echo "event: {$event}\n";
+        echo 'data: '.json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n\n";
+
+        if (ob_get_level() > 0) {
+            @ob_flush();
+        }
+
+        flush();
+    }
+
+    private function streamMaxIterations(): int
+    {
+        if (app()->runningUnitTests()) {
+            return 1;
+        }
+
+        return 300;
+    }
+
+    private function streamSleepMicroseconds(): int
+    {
+        if (app()->runningUnitTests()) {
+            return 0;
+        }
+
+        return 5000000;
     }
 }

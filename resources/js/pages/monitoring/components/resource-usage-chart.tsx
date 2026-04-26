@@ -18,6 +18,8 @@ interface Props {
     | 'disk_used'
     | 'network_upstream'
     | 'network_downstream'
+    | 'network_total_sent'
+    | 'network_total_received'
     | 'disk_read'
     | 'disk_write'
     | 'disk_tps'
@@ -47,7 +49,7 @@ export function ResourceUsageChart({ title, color, dataKey, label, chartData, li
               {chartData.length > 0
                 ? formatter
                   ? formatter(chartData[chartData.length - 1][dataKey], dataKey)
-                  : Number(chartData[chartData.length - 1][dataKey]).toLocaleString()
+                  : Number(chartData[chartData.length - 1][dataKey] ?? 0).toLocaleString()
                 : 'N/A'}
             </span>
           </div>
