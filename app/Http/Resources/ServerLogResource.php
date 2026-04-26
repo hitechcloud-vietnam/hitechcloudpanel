@@ -22,6 +22,7 @@ class ServerLogResource extends JsonResource
             'name' => $this->name,
             'disk' => $this->disk,
             'is_remote' => $this->is_remote,
+            'supports_streaming' => true,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

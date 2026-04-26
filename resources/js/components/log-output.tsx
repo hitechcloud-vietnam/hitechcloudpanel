@@ -4,8 +4,21 @@ import { Button } from '@/components/ui/button';
 import { ArrowDown, ClockArrowDownIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { Switch } from '@/components/ui/switch';
 
-export default function LogOutput({ className, children }: { className?: string; children: ReactNode }) {
+export default function LogOutput({
+  className,
+  children,
+  live,
+  onLiveChange,
+  showLiveToggle = false,
+}: {
+  className?: string;
+  children: ReactNode;
+  live?: boolean;
+  onLiveChange?: (checked: boolean) => void;
+  showLiveToggle?: boolean;
+}) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(false);
@@ -22,6 +35,12 @@ export default function LogOutput({ className, children }: { className?: string;
 
   return (
     <div className="relative w-full">
+      {showLiveToggle && onLiveChange ? (
+        <div className="bg-background/90 absolute top-4 right-16 z-10 flex items-center gap-2 rounded-md border px-3 py-2 text-xs shadow-sm">
+          <span className="font-medium">Live</span>
+          <Switch checked={!!live} onCheckedChange={onLiveChange} aria-label="Toggle live log streaming" />
+        </div>
+      ) : null}
       <ScrollArea
         ref={scrollRef}
         className={cn(

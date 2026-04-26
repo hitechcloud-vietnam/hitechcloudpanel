@@ -9,6 +9,8 @@ import { useQuery } from '@tanstack/react-query';
 import { ChevronRightIcon, LogsIcon, RefreshCwIcon, XIcon } from 'lucide-react';
 import { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useLogStream } from '@/hooks/use-log-stream';
+import LogOutput from '@/components/log-output';
 
 interface LogEntry {
   id: number;
@@ -20,6 +22,10 @@ export function InstantLogs({ server, children }: { server: Server; children: Re
   const [logEntry, setLogEntry] = useState<LogEntry | null>(null);
   const [page, setPage] = useState(1);
   const [logs, setLogs] = useState<ServerLog[]>([]);
+  const [live, setLive] = useState(true);
+  const activeLog = logs.find((log) => log.id === logEntry?.id) ?? null;
+  const streamUrl = activeLog?.supports_streaming ? route('logs.stream', { server: server.id, log: activeLog.id }) : null;
+  const stream = useLogStream(streamUrl, open && !!activeLog?.supports_streaming && live);
 
   const query = useQuery<PaginatedData<ServerLog>>({
     queryKey: ['instant-logs', server.id, page],
@@ -57,6 +63,15 @@ export function InstantLogs({ server, children }: { server: Server; children: Re
       setLogEntry(null);
       return;
     }
+
+    const selectedLog = logs.find((log) => log.id === logId);
+
+    if (selectedLog?.supports_streaming) {
+      setLive(true);
+      setLogEntry({ id: logId, content: '' });
+      return;
+    }
+
     setLogEntry({
       id: logId,
       content: 'Loading...',
@@ -91,6 +106,21 @@ export function InstantLogs({ server, children }: { server: Server; children: Re
     document.addEventListener('keydown', handleKeydown);
     return () => document.removeEventListener('keydown', handleKeydown);
   }, [open, setOpen]);
+
+  useEffect(() => {
+    if (logEntry?.id && activeLog?.supports_streaming) {
+      setLogEntry((previous) => {
+        if (!previous || previous.id !== activeLog.id) {
+          return previous;
+        }
+
+        return {
+          ...previous,
+          content: stream.error ? `Error: ${stream.error}` : stream.content || 'Connecting...',
+        };
+      });
+    }
+  }, [activeLog?.id, activeLog?.supports_streaming, logEntry?.id, stream.content, stream.error]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -140,7 +170,11 @@ export function InstantLogs({ server, children }: { server: Server; children: Re
                 </div>
               </Button>
               {logEntry?.id === log.id && (
-                <div className="bg-muted/50 max-h-64 overflow-auto border-b px-4 py-2 font-mono text-xs whitespace-pre-wrap">{logEntry.content}</div>
+                <div className="border-b px-4 py-2">
+                  <LogOutput className="h-64 max-h-64 text-xs" live={live} onLiveChange={setLive} showLiveToggle={!!activeLog?.supports_streaming}>
+                    {logEntry.content}
+                  </LogOutput>
+                </div>
               )}
             </div>
           ))}

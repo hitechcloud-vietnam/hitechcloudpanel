@@ -9,6 +9,7 @@ use App\Http\Resources\ServerLogResource;
 use App\Models\Server;
 use App\Models\ServerLog;
 use App\Models\Site;
+use App\Support\LogStreamer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -75,6 +76,55 @@ class ServerLogController extends Controller
         $this->authorize('view', $log);
 
         return $log->getContent();
+    }
+
+    #[Get('/{log}/stream', name: 'logs.stream')]
+    public function stream(Server $server, ServerLog $log): StreamedResponse
+    {
+        $this->authorize('view', $log);
+
+        if ($log->is_remote) {
+            return response()->stream(function () use ($server, $log): void {
+                ignore_user_abort(true);
+                @set_time_limit(0);
+
+                LogStreamer::send('log', [
+                    'chunk' => $log->getContent(),
+                    'reset' => true,
+                    'completed' => false,
+                ]);
+
+                $server->ssh()->exec(
+                    command: $server->os()->tailStreamCommand($log->name, 150),
+                    stream: true,
+                    streamCallback: function (string $output): void {
+                        LogStreamer::send('log', [
+                            'chunk' => $output,
+                            'reset' => false,
+                            'completed' => false,
+                        ]);
+                    }
+                );
+            }, 200, [
+                'Cache-Control' => 'no-cache',
+                'Connection' => 'keep-alive',
+                'X-Accel-Buffering' => 'no',
+                'Content-Type' => 'text/event-stream',
+            ]);
+        }
+
+        $offset = 0;
+
+        return LogStreamer::make(function () use ($log, &$offset): array {
+            $payload = $log->getStreamChunk($offset);
+            $offset = $payload['next_offset'];
+
+            return [
+                'chunk' => $payload['chunk'],
+                'reset' => $payload['reset'],
+                'completed' => false,
+            ];
+        });
     }
 
     /**

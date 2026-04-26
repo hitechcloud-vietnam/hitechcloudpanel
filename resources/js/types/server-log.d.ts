@@ -6,6 +6,7 @@ export interface ServerLog {
   name: string;
   disk: string;
   is_remote: boolean;
+  supports_streaming?: boolean;
   created_at: string;
   updated_at: string;
 

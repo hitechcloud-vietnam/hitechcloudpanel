@@ -21,6 +21,7 @@ class WorkflowRunResource extends JsonResource
             'status_color' => $this->status->getColor(),
             'current_node_label' => $this->current_node_label,
             'current_node_id' => $this->current_node_id,
+            'supports_streaming' => ! empty($this->log_disk) && ! empty($this->log_path),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

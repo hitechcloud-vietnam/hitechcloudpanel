@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Actions\Workflow\RunWorkflow;
+use App\Enums\WorkflowRunStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WorkflowRunResource;
 use App\Models\Project;
 use App\Models\Workflow;
 use App\Models\WorkflowRun;
+use App\Support\LogStreamer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -15,6 +17,7 @@ use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
 use Spatie\RouteAttributes\Attributes\Post;
 use Spatie\RouteAttributes\Attributes\Prefix;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 #[Prefix('api/projects/{project}/workflows/{workflow}/runs')]
 #[Middleware(['auth:sanctum', 'can-see-project'])]
@@ -76,6 +79,31 @@ class WorkflowRunController extends Controller
         return response($logContent, 200, [
             'Content-Type' => 'text/plain; charset=UTF-8',
         ]);
+    }
+
+    #[Get('{workflowRun}/log/stream', name: 'api.projects.workflows.runs.stream', middleware: 'ability:read')]
+    public function stream(Project $project, Workflow $workflow, WorkflowRun $workflowRun): StreamedResponse
+    {
+        $this->authorize('view', $workflow);
+
+        $this->validateRoute($project, $workflow);
+
+        if ($workflowRun->workflow_id !== $workflow->id) {
+            abort(404, 'Workflow run not found for this workflow');
+        }
+
+        $offset = 0;
+
+        return LogStreamer::make(function () use ($workflowRun, &$offset): array {
+            $payload = $workflowRun->getLogStreamChunk($offset);
+            $offset = $payload['next_offset'];
+
+            return [
+                'chunk' => $payload['chunk'],
+                'reset' => $payload['reset'],
+                'completed' => $workflowRun->fresh()?->status !== WorkflowRunStatus::RUNNING,
+            ];
+        });
     }
 
     private function validateRoute(Project $project, Workflow $workflow): void

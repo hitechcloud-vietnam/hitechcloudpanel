@@ -20,9 +20,13 @@ import { useQuery } from '@tanstack/react-query';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useForm } from '@inertiajs/react';
 import FormSuccessful from '@/components/form-successful';
+import { useLogStream } from '@/hooks/use-log-stream';
 
 export function View({ serverLog, children }: { serverLog: ServerLog; children?: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [live, setLive] = useState(true);
+  const streamUrl = serverLog.supports_streaming ? route('logs.stream', { server: serverLog.server_id, log: serverLog.id }) : null;
+  const stream = useLogStream(streamUrl, open && !!serverLog.supports_streaming && live);
 
   const query = useQuery({
     queryKey: ['server-log', serverLog.id],
@@ -37,7 +41,7 @@ export function View({ serverLog, children }: { serverLog: ServerLog; children?:
         throw new Error('Unknown error occurred');
       }
     },
-    enabled: open,
+    enabled: open && !serverLog.supports_streaming,
     retry: false,
     refetchInterval: (query) => {
       if (query.state.status === 'error') return false;
@@ -53,11 +57,21 @@ export function View({ serverLog, children }: { serverLog: ServerLog; children?:
           <DialogTitle>View Log</DialogTitle>
           <DialogDescription className="sr-only">This is all content of the log</DialogDescription>
         </DialogHeader>
-        <LogOutput>
+        <LogOutput live={live} onLiveChange={setLive} showLiveToggle={!!serverLog.supports_streaming}>
           <>
-            {query.isLoading && 'Loading...'}
-            {query.isError && <div className="text-red-500">Error: {query.error.message}</div>}
-            {query.data && !query.isError && query.data}
+            {serverLog.supports_streaming ? (
+              <>
+                {!stream.content && !stream.error && 'Connecting...'}
+                {stream.error && <div className="text-red-500">Error: {stream.error}</div>}
+                {stream.content}
+              </>
+            ) : (
+              <>
+                {query.isLoading && 'Loading...'}
+                {query.isError && <div className="text-red-500">Error: {query.error.message}</div>}
+                {query.data && !query.isError && query.data}
+              </>
+            )}
           </>
         </LogOutput>
         <DialogFooter>

@@ -157,6 +157,71 @@ class ServerLog extends AbstractModel
         return "Log file doesn't exist or is empty!";
     }
 
+    /**
+     * @return array{chunk:string, next_offset:int, reset:bool}
+     */
+    public function getStreamChunk(int $offset = 0): array
+    {
+        if ($this->is_remote) {
+            $content = $this->getContent() ?? '';
+
+            return [
+                'chunk' => $content,
+                'next_offset' => strlen($content),
+                'reset' => true,
+            ];
+        }
+
+        if (! Storage::disk($this->disk)->exists($this->name)) {
+            return [
+                'chunk' => "Log file doesn't exist or is empty!",
+                'next_offset' => 0,
+                'reset' => true,
+            ];
+        }
+
+        $path = Storage::disk($this->disk)->path($this->name);
+        clearstatcache(true, $path);
+        $size = File::size($path);
+        $reset = false;
+
+        if ($offset < 0 || $offset > $size) {
+            $offset = 0;
+            $reset = true;
+        }
+
+        if ($size === $offset) {
+            return [
+                'chunk' => '',
+                'next_offset' => $size,
+                'reset' => $reset,
+            ];
+        }
+
+        $handle = fopen($path, 'rb');
+
+        if ($handle === false) {
+            return [
+                'chunk' => $this->getContent() ?? '',
+                'next_offset' => $size,
+                'reset' => true,
+            ];
+        }
+
+        try {
+            fseek($handle, $offset);
+            $chunk = stream_get_contents($handle) ?: '';
+        } finally {
+            fclose($handle);
+        }
+
+        return [
+            'chunk' => $chunk,
+            'next_offset' => $size,
+            'reset' => $reset,
+        ];
+    }
+
     public static function log(Server $server, string $type, string $content, ?Site $site = null): ServerLog
     {
         $log = new self([

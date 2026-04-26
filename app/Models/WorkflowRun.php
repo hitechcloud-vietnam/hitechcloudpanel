@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -72,5 +73,60 @@ class WorkflowRun extends Model
         }
 
         return Storage::disk($this->log_disk)->get($this->log_path);
+    }
+
+    /**
+     * @return array{chunk:string, next_offset:int, reset:bool}
+     */
+    public function getLogStreamChunk(int $offset = 0): array
+    {
+        if (empty($this->log_disk) || empty($this->log_path) || ! Storage::disk($this->log_disk)->exists($this->log_path)) {
+            return [
+                'chunk' => "Log file doesn't exist or is empty!",
+                'next_offset' => 0,
+                'reset' => true,
+            ];
+        }
+
+        $path = Storage::disk($this->log_disk)->path($this->log_path);
+        clearstatcache(true, $path);
+        $size = File::size($path);
+        $reset = false;
+
+        if ($offset < 0 || $offset > $size) {
+            $offset = 0;
+            $reset = true;
+        }
+
+        if ($size === $offset) {
+            return [
+                'chunk' => '',
+                'next_offset' => $size,
+                'reset' => $reset,
+            ];
+        }
+
+        $handle = fopen($path, 'rb');
+
+        if ($handle === false) {
+            return [
+                'chunk' => $this->getLogContent(),
+                'next_offset' => $size,
+                'reset' => true,
+            ];
+        }
+
+        try {
+            fseek($handle, $offset);
+            $chunk = stream_get_contents($handle) ?: '';
+        } finally {
+            fclose($handle);
+        }
+
+        return [
+            'chunk' => $chunk,
+            'next_offset' => $size,
+            'reset' => $reset,
+        ];
     }
 }

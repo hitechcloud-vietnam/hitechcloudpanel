@@ -220,6 +220,14 @@ class OS
         );
     }
 
+    public function tailStreamCommand(string $path, int $lines = 150): string
+    {
+        return (string) view('ssh.os.tail-stream', [
+            'path' => $path,
+            'lines' => $lines,
+        ]);
+    }
+
     /**
      * @param  array<string, mixed>  $variables
      *
