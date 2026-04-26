@@ -68,6 +68,8 @@ class ConsoleController extends Controller
     #[Get('/working-dir', name: 'console.working-dir')]
     public function workingDir(Server $server, Request $request): JsonResponse
     {
+        $this->authorize('view', $server);
+
         $validated = $request->validate([
             'user' => ['nullable', Rule::in($server->getSshUsers())],
         ]);

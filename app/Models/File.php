@@ -60,7 +60,7 @@ class File extends AbstractModel
                 return false;
             }
 
-            $file->server->os()->deleteFile($file->getFilePath(), $file->server_user);
+            $file->server->ssh($file->server_user)->deletePath($file->getFilePath());
 
             return true;
         });
@@ -139,6 +139,39 @@ class File extends AbstractModel
                     'permissions' => $matches[1],
                 ]);
             }
+        }
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $entries
+     */
+    public static function parseEntries(User $user, Server $server, string $path, string $serverUser, array $entries): void
+    {
+        self::query()
+            ->where('user_id', $user->id)
+            ->where('server_id', $server->id)
+            ->where('server_user', $serverUser)
+            ->delete();
+
+        foreach ($entries as $entry) {
+            if (($entry['name'] ?? null) === '.' || ($entry['name'] ?? null) === '..') {
+                continue;
+            }
+
+            self::create([
+                'user_id' => $user->id,
+                'server_id' => $server->id,
+                'server_user' => $serverUser,
+                'path' => $path,
+                'type' => $entry['type'],
+                'name' => $entry['name'],
+                'size' => (int) ($entry['size'] ?? 0),
+                'links' => (int) ($entry['links'] ?? 1),
+                'owner' => (string) ($entry['owner'] ?? ''),
+                'group' => (string) ($entry['group'] ?? ''),
+                'date' => (string) ($entry['date'] ?? ''),
+                'permissions' => (string) ($entry['permissions'] ?? ''),
+            ]);
         }
     }
 

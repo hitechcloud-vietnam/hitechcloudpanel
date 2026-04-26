@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\FileResource;
 use App\Models\File;
 use App\Models\Server;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -70,7 +73,55 @@ class FileController extends Controller
         $path = $this->normalizePath($validated['path'], $serverUser);
 
         return response()->json([
-            'content' => $server->os()->readFile($path),
+            'content' => $server->ssh($serverUser)->readFileContents($path),
+        ]);
+    }
+
+    #[Get('/preview', name: 'server-files.preview')]
+    public function preview(Request $request, Server $server): HttpResponse
+    {
+        $this->authorize('view', $server);
+
+        $validated = Validator::make($request->all(), [
+            'server_user' => ['nullable', 'string', Rule::in($server->getSshUsers())],
+            'path' => ['required', 'string'],
+        ])->validate();
+
+        $serverUser = $validated['server_user'] ?? $server->getSshUser();
+        $path = $this->normalizePath($validated['path'], $serverUser);
+        $content = $server->ssh($serverUser)->readFileContents($path);
+        $mimeType = $this->detectMimeType($path, $content);
+
+        abort_unless(
+            Str::startsWith($mimeType, 'text/') || Str::startsWith($mimeType, 'image/'),
+            422,
+            'Preview is only available for text and image files.'
+        );
+
+        return response($content, 200, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="'.basename($path).'"',
+        ]);
+    }
+
+    #[Get('/download', name: 'server-files.download')]
+    public function download(Request $request, Server $server): HttpResponse
+    {
+        $this->authorize('view', $server);
+
+        $validated = Validator::make($request->all(), [
+            'server_user' => ['nullable', 'string', Rule::in($server->getSshUsers())],
+            'path' => ['required', 'string'],
+        ])->validate();
+
+        $serverUser = $validated['server_user'] ?? $server->getSshUser();
+        $path = $this->normalizePath($validated['path'], $serverUser);
+        $content = $server->ssh($serverUser)->readFileContents($path);
+        $mimeType = $this->detectMimeType($path, $content);
+
+        return response($content, 200, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'attachment; filename="'.basename($path).'"',
         ]);
     }
 
@@ -86,7 +137,7 @@ class FileController extends Controller
         ])->validate();
 
         $directoryPath = $this->normalizePath($validated['path'].'/'.$validated['name'], $validated['server_user']);
-        $server->os()->mkdir($directoryPath, $validated['server_user']);
+        $server->ssh($validated['server_user'])->createDirectory($directoryPath);
 
         return back()->with('success', 'Directory created successfully.');
     }
@@ -104,13 +155,33 @@ class FileController extends Controller
         ])->validate();
 
         $filePath = $this->normalizePath($validated['path'].'/'.$validated['name'], $validated['server_user']);
-        $server->os()->write($filePath, $validated['content'] ?? '', $validated['server_user']);
+        $server->ssh($validated['server_user'])->writeFileContents($filePath, $validated['content'] ?? '');
 
         return back()->with('success', 'File created successfully.');
     }
 
+    #[Post('/upload', name: 'server-files.upload')]
+    public function upload(Request $request, Server $server): RedirectResponse
+    {
+        $this->authorize('update', $server);
+
+        $validated = Validator::make($request->all(), [
+            'server_user' => ['required', 'string', Rule::in($server->getSshUsers())],
+            'path' => ['required', 'string'],
+            'file' => ['required', 'file', 'max:102400'],
+        ])->validate();
+
+        /** @var UploadedFile $file */
+        $file = $validated['file'];
+        $remotePath = $this->normalizePath($validated['path'].'/'.$file->getClientOriginalName(), $validated['server_user']);
+
+        $server->ssh($validated['server_user'])->uploadLocalFile($file->getRealPath(), $remotePath);
+
+        return back()->with('success', 'File uploaded successfully.');
+    }
+
     #[Patch('/content', name: 'server-files.update')]
-    public function update(Request $request, Server $server): RedirectResponse
+    public function update(Request $request, Server $server): RedirectResponse|JsonResponse
     {
         $this->authorize('update', $server);
 
@@ -120,9 +191,91 @@ class FileController extends Controller
             'content' => ['required', 'string'],
         ])->validate();
 
-        $server->os()->write($this->normalizePath($validated['path'], $validated['server_user']), $validated['content'], $validated['server_user']);
+        $server->ssh($validated['server_user'])->writeFileContents(
+            $this->normalizePath($validated['path'], $validated['server_user']),
+            $validated['content']
+        );
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => 'ok',
+            ]);
+        }
 
         return back()->with('success', 'File updated successfully.');
+    }
+
+    #[Patch('/rename', name: 'server-files.rename')]
+    public function rename(Request $request, Server $server): RedirectResponse|JsonResponse
+    {
+        $this->authorize('update', $server);
+
+        $validated = Validator::make($request->all(), [
+            'server_user' => ['required', 'string', Rule::in($server->getSshUsers())],
+            'path' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[^\/]+$/', 'not_in:.,..'],
+        ])->validate();
+
+        $currentPath = $this->normalizePath($validated['path'], $validated['server_user']);
+        $targetPath = $this->normalizePath(dirname($currentPath).'/'.$validated['name'], $validated['server_user']);
+
+        $server->ssh($validated['server_user'])->renamePath($currentPath, $targetPath);
+
+        File::query()
+            ->where('server_id', $server->id)
+            ->where('user_id', $request->user()->id)
+            ->where('server_user', $validated['server_user'])
+            ->where('path', dirname($currentPath))
+            ->where('name', basename($currentPath))
+            ->update([
+                'name' => $validated['name'],
+            ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => 'ok',
+                'path' => $targetPath,
+            ]);
+        }
+
+        return back()->with('success', 'File renamed successfully.');
+    }
+
+    #[Patch('/move', name: 'server-files.move')]
+    public function move(Request $request, Server $server): RedirectResponse|JsonResponse
+    {
+        $this->authorize('update', $server);
+
+        $validated = Validator::make($request->all(), [
+            'server_user' => ['required', 'string', Rule::in($server->getSshUsers())],
+            'path' => ['required', 'string'],
+            'destination' => ['required', 'string'],
+        ])->validate();
+
+        $currentPath = $this->normalizePath($validated['path'], $validated['server_user']);
+        $destinationDirectory = $this->normalizePath($validated['destination'], $validated['server_user']);
+        $targetPath = $this->normalizePath($destinationDirectory.'/'.basename($currentPath), $validated['server_user']);
+
+        $server->ssh($validated['server_user'])->renamePath($currentPath, $targetPath);
+
+        File::query()
+            ->where('server_id', $server->id)
+            ->where('user_id', $request->user()->id)
+            ->where('server_user', $validated['server_user'])
+            ->where('path', dirname($currentPath))
+            ->where('name', basename($currentPath))
+            ->update([
+                'path' => dirname($targetPath),
+            ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => 'ok',
+                'path' => $targetPath,
+            ]);
+        }
+
+        return back()->with('success', 'File moved successfully.');
     }
 
     #[Delete('/{file}', name: 'server-files.destroy')]
@@ -135,15 +288,16 @@ class FileController extends Controller
             404
         );
 
-        $file->delete();
+        $server->ssh($file->server_user)->deletePath($file->getFilePath());
+        $file->deleteQuietly();
 
         return back()->with('success', 'File deleted successfully.');
     }
 
     private function syncFiles(Request $request, Server $server, string $serverUser, string $path): void
     {
-        $listOutput = $server->os()->ls($path, $serverUser);
-        File::parse($request->user(), $server, $path, $serverUser, $listOutput);
+        $entries = $server->ssh($serverUser)->listDirectory($path);
+        File::parseEntries($request->user(), $server, $path, $serverUser, $entries);
     }
 
     private function resolveServerUser(Request $request, Server $server): string
@@ -190,5 +344,24 @@ class FileController extends Controller
         }
 
         return $normalized;
+    }
+
+    private function detectMimeType(string $path, string $content): string
+    {
+        $mimeType = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $content) ?: 'application/octet-stream';
+
+        if ($mimeType !== 'application/octet-stream') {
+            return $mimeType;
+        }
+
+        return match (strtolower(pathinfo($path, PATHINFO_EXTENSION))) {
+            'txt', 'log', 'md', 'json', 'yml', 'yaml', 'xml', 'ini', 'conf', 'env', 'js', 'ts', 'tsx', 'jsx', 'css', 'html', 'htm', 'php', 'go', 'sh' => 'text/plain',
+            'png' => 'image/png',
+            'jpg', 'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+            'svg' => 'image/svg+xml',
+            default => 'application/octet-stream',
+        };
     }
 }

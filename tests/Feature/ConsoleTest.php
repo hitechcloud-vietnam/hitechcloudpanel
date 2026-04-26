@@ -23,6 +23,18 @@ class ConsoleTest extends TestCase
         ])->assertStreamedContent('fake output');
     }
 
+    public function test_run_as_root(): void
+    {
+        SSH::fake('root output');
+
+        $this->actingAs($this->user);
+
+        $this->post(route('console.run', $this->server), [
+            'user' => 'root',
+            'command' => 'whoami',
+        ])->assertStreamedContent('root output');
+    }
+
     public function test_run_validation_error(): void
     {
         $this->actingAs($this->user);
@@ -52,5 +64,33 @@ class ConsoleTest extends TestCase
             'server' => $this->server,
             'user' => $this->server->getSshUser(),
         ]))->assertJsonPath('dir', home_path($this->server->getSshUser()).'/app');
+    }
+
+    public function test_working_dir_defaults_to_root_home(): void
+    {
+        $this->actingAs($this->user);
+
+        $this->get(route('console.working-dir', [
+            'server' => $this->server,
+            'user' => 'root',
+        ]))->assertJsonPath('dir', '/root');
+    }
+
+    public function test_new_session_clears_scoped_root_working_dir(): void
+    {
+        Cache::put('console.'.$this->server->id.'.root.dir', '/root/projects');
+
+        $this->actingAs($this->user);
+
+        $this->get(route('console.new-session', [
+            'server' => $this->server,
+            'user' => 'root',
+        ]))
+            ->assertSuccessful()
+            ->assertJson([
+                'status' => 'ok',
+            ]);
+
+        $this->assertNull(Cache::get('console.'.$this->server->id.'.root.dir'));
     }
 }

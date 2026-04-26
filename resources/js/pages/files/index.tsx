@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Editor } from '@monaco-editor/react';
-import { FolderPlusIcon, FilePlusIcon, LoaderCircleIcon, ChevronRightIcon } from 'lucide-react';
+import { FolderPlusIcon, FilePlusIcon, LoaderCircleIcon, ChevronRightIcon, UploadIcon, EyeIcon, ImageIcon, FileTextIcon } from 'lucide-react';
 import ServerLayout from '@/layouts/server/layout';
 import Container from '@/components/container';
 import HeaderContainer from '@/components/header-container';
@@ -160,21 +160,159 @@ function CreateFileDialog({ server, currentPath, serverUser }: { server: Server;
   );
 }
 
-function FileEditor({ file, server, onClose, serverUser }: { file: ServerFile | null; server: Server; onClose: () => void; serverUser: string }) {
-  const { getActualAppearance } = useAppearance();
-  const form = useForm({
-    path: file?.file_path || '',
+function UploadFileDialog({ server, currentPath, serverUser }: { server: Server; currentPath: string; serverUser: string }) {
+  const [open, setOpen] = useState(false);
+  const form = useForm<{
+    path: string;
+    server_user: string;
+    file: globalThis.File | null;
+  }>({
+    path: currentPath,
     server_user: serverUser,
-    content: '',
+    file: null,
   });
 
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    form.post(route('server-files.upload', { server: server.id }), {
+      forceFormData: true,
+      preserveScroll: true,
+      onSuccess: () => {
+        setOpen(false);
+        form.reset('file');
+      },
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <UploadIcon />
+          Upload
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Upload file</DialogTitle>
+          <DialogDescription>Upload a local file to the current remote directory.</DialogDescription>
+        </DialogHeader>
+        <Form id="upload-file-form" className="space-y-4" onSubmit={submit}>
+          <div className="space-y-2">
+            <Label htmlFor="upload-file">File</Label>
+            <Input
+              id="upload-file"
+              type="file"
+              onChange={(e) => form.setData('file', e.target.files?.[0] ?? null)}
+            />
+            <InputError message={form.errors.file} />
+          </div>
+        </Form>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button form="upload-file-form" type="submit" disabled={form.processing}>
+            {form.processing && <LoaderCircleIcon className="animate-spin" />}
+            Upload
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function FilePreview({ file, server, serverUser, onClose }: { file: ServerFile | null; server: Server; serverUser: string; onClose: () => void }) {
+  const isImage = !!file?.name.match(/\.(png|jpe?g|gif|webp|svg)$/i);
+  const isText = !!file?.name.match(/\.(txt|log|md|json|ya?ml|xml|ini|conf|env|js|ts|tsx|jsx|css|html?|php|go|sh)$/i);
+
   const query = useQuery({
-    queryKey: ['server-files.content', server.id, file?.file_path],
+    queryKey: ['server-files.preview', server.id, file?.file_path, file?.server_user],
     queryFn: async () => {
-      const response = await axios.get(route('server-files.content', { server: server.id, path: file?.file_path }));
-      form.setData('content', response.data.content || '');
-      form.setData('path', file?.file_path || '');
-      form.setData('server_user', file?.server_user || serverUser);
+      if (!file || !isText) {
+        return null;
+      }
+
+      const response = await axios.get(
+        route('server-files.preview', {
+          server: server.id,
+          path: file.file_path,
+          server_user: file.server_user || serverUser,
+        }),
+        { responseType: 'text' },
+      );
+
+      return response.data as string;
+    },
+    enabled: !!file && isText,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  return (
+    <Sheet open={!!file} onOpenChange={(open) => !open && onClose()}>
+      <SheetContent className="sm:max-w-5xl">
+        <SheetHeader>
+          <SheetTitle className="flex items-center gap-2">
+            <EyeIcon className="h-4 w-4" />
+            Preview {file?.name}
+          </SheetTitle>
+          <SheetDescription>{file?.file_path}</SheetDescription>
+        </SheetHeader>
+
+        <div className="h-full overflow-auto rounded-lg border bg-muted/20 p-4">
+          {!file ? null : isImage ? (
+            <div className="flex h-full items-center justify-center">
+              <img
+                src={route('server-files.preview', {
+                  server: server.id,
+                  path: file.file_path,
+                  server_user: file.server_user || serverUser,
+                })}
+                alt={file.name}
+                className="max-h-[70vh] max-w-full rounded-md object-contain"
+              />
+            </div>
+          ) : isText ? (
+            query.isLoading ? (
+              <Skeleton className="h-full min-h-96 w-full" />
+            ) : (
+              <pre className="overflow-auto whitespace-pre-wrap break-words font-mono text-sm">{query.data ?? ''}</pre>
+            )
+          ) : (
+            <div className="text-muted-foreground flex h-full min-h-60 flex-col items-center justify-center gap-3 text-sm">
+              <FileTextIcon className="h-8 w-8" />
+              Preview is only available for text and image files.
+            </div>
+          )}
+        </div>
+
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button variant="outline">Close</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function FileEditor({ file, server, onClose, serverUser }: { file: ServerFile | null; server: Server; onClose: () => void; serverUser: string }) {
+  const { getActualAppearance } = useAppearance();
+  const [content, setContent] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const query = useQuery({
+    queryKey: ['server-files.content', server.id, file?.file_path, file?.server_user],
+    queryFn: async () => {
+      const response = await axios.get(
+        route('server-files.content', {
+          server: server.id,
+          path: file?.file_path,
+          server_user: file?.server_user || serverUser,
+        }),
+      );
+      setContent(response.data.content || '');
       return response.data;
     },
     enabled: !!file,
@@ -182,12 +320,25 @@ function FileEditor({ file, server, onClose, serverUser }: { file: ServerFile | 
     refetchOnWindowFocus: false,
   });
 
-  const save = (e: FormEvent) => {
+  const save = async (e: FormEvent) => {
     e.preventDefault();
-    form.patch(route('server-files.update', { server: server.id }), {
-      preserveScroll: true,
-      onSuccess: () => onClose(),
-    });
+
+    if (!file) {
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      await axios.patch(route('server-files.update', { server: server.id }), {
+        path: file.file_path,
+        server_user: file.server_user || serverUser,
+        content,
+      });
+      onClose();
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -200,11 +351,11 @@ function FileEditor({ file, server, onClose, serverUser }: { file: ServerFile | 
         <Form id="file-editor-form" className="h-full" onSubmit={save}>
           {query.isSuccess ? (
             <Editor
-              value={form.data.content}
+              value={content}
               defaultLanguage="plaintext"
               theme={getActualAppearance() === 'dark' ? 'vs-dark' : 'vs'}
               className="h-full"
-              onChange={(value) => form.setData('content', value ?? '')}
+              onChange={(value) => setContent(value ?? '')}
               options={{ fontSize: 15 }}
             />
           ) : (
@@ -213,8 +364,8 @@ function FileEditor({ file, server, onClose, serverUser }: { file: ServerFile | 
         </Form>
         <SheetFooter>
           <div className="flex items-center gap-2">
-            <Button form="file-editor-form" type="submit" disabled={form.processing || query.isLoading}>
-              {(form.processing || query.isLoading) && <LoaderCircleIcon className="animate-spin" />}
+            <Button form="file-editor-form" type="submit" disabled={saving || query.isLoading}>
+              {(saving || query.isLoading) && <LoaderCircleIcon className="animate-spin" />}
               Save
             </Button>
             <SheetClose asChild>
@@ -230,7 +381,8 @@ function FileEditor({ file, server, onClose, serverUser }: { file: ServerFile | 
 export default function Files() {
   const page = usePage<Page>();
   const [selectedFile, setSelectedFile] = useState<ServerFile | null>(null);
-  const columns = useMemo(() => getColumns({ onOpenEditor: setSelectedFile }), []);
+  const [previewFile, setPreviewFile] = useState<ServerFile | null>(null);
+  const columns = useMemo(() => getColumns({ onOpenEditor: setSelectedFile, onOpenPreview: setPreviewFile }), []);
 
   const homePath = (user: string) => (user === 'root' ? '/root' : `/home/${user}`);
 
@@ -321,6 +473,7 @@ export default function Files() {
                 Terminal here
               </Button>
             </InstantTerminal>
+            <UploadFileDialog server={page.props.server} currentPath={page.props.currentPath} serverUser={page.props.serverUser} />
             <CreateDirectoryDialog server={page.props.server} currentPath={page.props.currentPath} serverUser={page.props.serverUser} />
             <CreateFileDialog server={page.props.server} currentPath={page.props.currentPath} serverUser={page.props.serverUser} />
           </div>
@@ -335,6 +488,7 @@ export default function Files() {
       </Container>
 
       <FileEditor file={selectedFile} server={page.props.server} serverUser={page.props.serverUser} onClose={() => setSelectedFile(null)} />
+      <FilePreview file={previewFile} server={page.props.server} serverUser={page.props.serverUser} onClose={() => setPreviewFile(null)} />
     </ServerLayout>
   );
 }

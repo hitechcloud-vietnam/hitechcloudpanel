@@ -1,0 +1,1 @@
+import{j as n}from"./app-CvVoK1d-.js";import{c as r}from"./utils-CU-Mtduk.js";function m({className:o,children:a}){return n.jsx("div",{className:r("mx-auto w-full !max-w-none space-y-5 px-4 py-5",o),children:a})}export{m as C};

@@ -3,7 +3,6 @@ import { ColumnDef } from '@tanstack/react-table';
 import { MoreVerticalIcon, FolderIcon, FileIcon, LoaderCircleIcon } from 'lucide-react';
 import { ServerFile } from '@/types/file';
 import { bytesToHuman } from '@/lib/utils';
-import DateTime from '@/components/date-time';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
@@ -17,10 +16,28 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import InputError from '@/components/ui/input-error';
 
 type FileColumnsOptions = {
   onOpenEditor?: (file: ServerFile) => void;
+  onOpenPreview?: (file: ServerFile) => void;
 };
+
+const previewableExtensions = new Set([
+  'txt', 'log', 'md', 'json', 'yml', 'yaml', 'xml', 'ini', 'conf', 'env', 'js', 'ts', 'tsx', 'jsx', 'css', 'html', 'htm', 'php', 'go', 'sh',
+  'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg',
+]);
+
+function isPreviewable(file: ServerFile): boolean {
+  if (file.type !== 'file') {
+    return false;
+  }
+
+  const extension = file.name.split('.').pop()?.toLowerCase();
+
+  return extension ? previewableExtensions.has(extension) : false;
+}
 
 function Delete({ file }: { file: ServerFile }) {
   const [open, setOpen] = useState(false);
@@ -59,7 +76,99 @@ function Delete({ file }: { file: ServerFile }) {
   );
 }
 
-export function getColumns({ onOpenEditor }: FileColumnsOptions = {}): ColumnDef<ServerFile>[] {
+function Rename({ file }: { file: ServerFile }) {
+  const [open, setOpen] = useState(false);
+  const form = useForm({
+    path: file.file_path,
+    server_user: file.server_user,
+    name: file.name,
+  });
+
+  const submit = () => {
+    form.patch(route('server-files.rename', { server: file.server_id }), {
+      preserveScroll: true,
+      onSuccess: () => setOpen(false),
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Rename
+        </DropdownMenuItem>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Rename</DialogTitle>
+          <DialogDescription>Change the name of this file or directory.</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-2">
+          <Input value={form.data.name} onChange={(e) => form.setData('name', e.target.value)} />
+          <InputError message={form.errors.name} />
+          <InputError message={form.errors.path} />
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button disabled={form.processing} onClick={submit}>
+            {form.processing && <LoaderCircleIcon className="animate-spin" />}
+            Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function Move({ file }: { file: ServerFile }) {
+  const [open, setOpen] = useState(false);
+  const form = useForm({
+    path: file.file_path,
+    server_user: file.server_user,
+    destination: file.path,
+  });
+
+  const submit = () => {
+    form.patch(route('server-files.move', { server: file.server_id }), {
+      preserveScroll: true,
+      onSuccess: () => setOpen(false),
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Move
+        </DropdownMenuItem>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Move</DialogTitle>
+          <DialogDescription>Move this file or directory to another path.</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-2">
+          <Input value={form.data.destination} onChange={(e) => form.setData('destination', e.target.value)} placeholder="/home/user/folder" />
+          <InputError message={form.errors.destination} />
+          <InputError message={form.errors.path} />
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button disabled={form.processing} onClick={submit}>
+            {form.processing && <LoaderCircleIcon className="animate-spin" />}
+            Move
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function getColumns({ onOpenEditor, onOpenPreview }: FileColumnsOptions = {}): ColumnDef<ServerFile>[] {
   return [
     {
       accessorKey: 'name',
@@ -122,6 +231,31 @@ export function getColumns({ onOpenEditor }: FileColumnsOptions = {}): ColumnDef
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {file.type === 'file' && (
+                  <>
+                    {isPreviewable(file) && (
+                      <DropdownMenuItem
+                        onSelect={(e) => {
+                          e.preventDefault();
+                          onOpenPreview?.(file);
+                        }}
+                      >
+                        Preview
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem asChild>
+                      <a
+                        href={route('server-files.download', {
+                          server: file.server_id,
+                          path: file.file_path,
+                          server_user: file.server_user,
+                        })}
+                      >
+                        Download
+                      </a>
+                    </DropdownMenuItem>
+                  </>
+                )}
+                {file.type === 'file' && (
                   <DropdownMenuItem
                     onSelect={(e) => {
                       e.preventDefault();
@@ -131,6 +265,8 @@ export function getColumns({ onOpenEditor }: FileColumnsOptions = {}): ColumnDef
                     Edit
                   </DropdownMenuItem>
                 )}
+                <Move file={file} />
+                <Rename file={file} />
                 <Delete file={file} />
               </DropdownMenuContent>
             </DropdownMenu>

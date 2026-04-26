@@ -25,6 +25,12 @@ class SSHFake extends SSH
 
     protected string $uploadedContent;
 
+    /** @var array<string, string> */
+    protected array $remoteFiles = [];
+
+    /** @var array<int, array<string, mixed>> */
+    protected array $directoryEntries = [];
+
     public function __construct(protected ?string $output = null) {}
 
     public function init(Server $server, ?string $asUser = null): self
@@ -90,6 +96,72 @@ class SSHFake extends SSH
     }
 
     public function download(string $local, string $remote, ?string $log = null, ?int $siteId = null): void {}
+
+    /**
+     * @param  array<int, array<string, mixed>>  $entries
+     */
+    public function withDirectoryEntries(array $entries): self
+    {
+        $this->directoryEntries = $entries;
+
+        return $this;
+    }
+
+    public function withRemoteFile(string $path, string $content): self
+    {
+        $this->remoteFiles[$path] = $content;
+
+        return $this;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function listDirectory(string $path): array
+    {
+        return $this->directoryEntries;
+    }
+
+    public function readFileContents(string $path): string
+    {
+        return $this->remoteFiles[$path] ?? ($this->output ?? '');
+    }
+
+    public function writeFileContents(string $path, string $content): void
+    {
+        $this->remoteFiles[$path] = $content;
+        $this->commands[] = 'sftp:write '.$path;
+    }
+
+    public function uploadLocalFile(string $localPath, string $remotePath): void
+    {
+        $this->uploadedLocalPath = $localPath;
+        $this->uploadedRemotePath = $remotePath;
+        $this->uploadedContent = file_get_contents($localPath) ?: '';
+        $this->remoteFiles[$remotePath] = $this->uploadedContent;
+        $this->commands[] = 'sftp:upload '.$remotePath;
+    }
+
+    public function createDirectory(string $path): void
+    {
+        $this->commands[] = 'sftp:mkdir '.$path;
+    }
+
+    public function renamePath(string $from, string $to): void
+    {
+        if (isset($this->remoteFiles[$from])) {
+            $this->remoteFiles[$to] = $this->remoteFiles[$from];
+            unset($this->remoteFiles[$from]);
+        }
+
+        $this->commands[] = 'sftp:rename '.$from.' '.$to;
+    }
+
+    public function deletePath(string $path): void
+    {
+        unset($this->remoteFiles[$path]);
+        $this->commands[] = 'sftp:delete '.$path;
+    }
 
     /**
      * @param  array<string>|string  $commands

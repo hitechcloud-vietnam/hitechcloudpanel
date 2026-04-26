@@ -139,7 +139,11 @@ class SSH
                 $this->connection = new SSH2($ip, $this->server->port);
             }
 
-            $login = $this->connection->login($this->user, $this->privateKey);
+            $loginUser = $sftp && $this->asUser !== null && $this->asUser !== ''
+                ? $this->asUser
+                : $this->user;
+
+            $login = $this->connection->login($loginUser, $this->privateKey);
 
             if (! $login) {
                 throw new SSHAuthenticationError('Error authenticating');
@@ -246,6 +250,179 @@ class SSH
         $sftp = $this->ensureSftp();
 
         $sftp->get($remote, $local);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function listDirectory(string $path): array
+    {
+        $sftp = $this->ensureSftp();
+        $entries = $sftp->rawlist($path);
+
+        if ($entries === false) {
+            throw new SSHCommandError('Unable to list remote directory.', $this->log);
+        }
+
+        $normalizedPath = rtrim($path, '/');
+        if ($normalizedPath === '') {
+            $normalizedPath = '/';
+        }
+
+        $files = [];
+
+        foreach ($entries as $name => $entry) {
+            if ($name === '.' || $name === '..') {
+                continue;
+            }
+
+            $type = match ($entry['type'] ?? null) {
+                1 => 'file',
+                2 => 'directory',
+                default => 'unknown',
+            };
+
+            if ($type === 'unknown') {
+                continue;
+            }
+
+            $files[] = [
+                'path' => $normalizedPath,
+                'type' => $type,
+                'name' => $name,
+                'size' => (int) ($entry['size'] ?? 0),
+                'links' => (int) ($entry['nlink'] ?? 1),
+                'owner' => (string) ($entry['owner'] ?? ''),
+                'group' => (string) ($entry['group'] ?? ''),
+                'date' => isset($entry['mtime']) ? date('M d H:i', (int) $entry['mtime']) : '',
+                'permissions' => $this->formatPermissions($entry),
+            ];
+        }
+
+        usort($files, function (array $left, array $right): int {
+            if ($left['type'] !== $right['type']) {
+                return $left['type'] === 'directory' ? -1 : 1;
+            }
+
+            return strcasecmp((string) $left['name'], (string) $right['name']);
+        });
+
+        return $files;
+    }
+
+    public function readFileContents(string $path): string
+    {
+        $sftp = $this->ensureSftp();
+        $content = $sftp->get($path);
+
+        if ($content === false) {
+            throw new SSHCommandError('Unable to read remote file.', $this->log);
+        }
+
+        return $content;
+    }
+
+    public function writeFileContents(string $path, string $content): void
+    {
+        $sftp = $this->ensureSftp();
+
+        if (! $sftp->put($path, $content)) {
+            throw new SSHCommandError('Unable to write remote file.', $this->log);
+        }
+    }
+
+    public function uploadLocalFile(string $localPath, string $remotePath): void
+    {
+        $sftp = $this->ensureSftp();
+
+        if (! $sftp->put($remotePath, $localPath, SFTP::SOURCE_LOCAL_FILE)) {
+            throw new SSHCommandError('Unable to upload remote file.', $this->log);
+        }
+    }
+
+    public function createDirectory(string $path): void
+    {
+        $sftp = $this->ensureSftp();
+
+        if (! $sftp->mkdir($path, -1, true) && ! $sftp->is_dir($path)) {
+            throw new SSHCommandError('Unable to create remote directory.', $this->log);
+        }
+    }
+
+    public function renamePath(string $from, string $to): void
+    {
+        $sftp = $this->ensureSftp();
+
+        if (! $sftp->rename($from, $to)) {
+            throw new SSHCommandError('Unable to rename remote path.', $this->log);
+        }
+    }
+
+    public function deletePath(string $path): void
+    {
+        $sftp = $this->ensureSftp();
+
+        if (! $this->deletePathRecursive($sftp, $path)) {
+            throw new SSHCommandError('Unable to delete remote path.', $this->log);
+        }
+    }
+
+    private function deletePathRecursive(SFTP $sftp, string $path): bool
+    {
+        if ($sftp->is_dir($path)) {
+            $items = $sftp->nlist($path);
+            if ($items === false) {
+                return false;
+            }
+
+            foreach ($items as $item) {
+                if ($item === '.' || $item === '..') {
+                    continue;
+                }
+
+                $childPath = rtrim($path, '/').'/'.$item;
+
+                if (! $this->deletePathRecursive($sftp, $childPath)) {
+                    return false;
+                }
+            }
+
+            return $sftp->rmdir($path);
+        }
+
+        return $sftp->delete($path);
+    }
+
+    /**
+     * @param  array<string, mixed>  $entry
+     */
+    private function formatPermissions(array $entry): string
+    {
+        $permissions = (int) ($entry['permissions'] ?? 0);
+        $type = match ($entry['type'] ?? null) {
+            2 => 'd',
+            1 => '-',
+            default => '-',
+        };
+
+        $map = [
+            0x0100 => 'r',
+            0x0080 => 'w',
+            0x0040 => 'x',
+            0x0020 => 'r',
+            0x0010 => 'w',
+            0x0008 => 'x',
+            0x0004 => 'r',
+            0x0002 => 'w',
+            0x0001 => 'x',
+        ];
+
+        $result = $type;
+        foreach ($map as $bit => $char) {
+            $result .= ($permissions & $bit) !== 0 ? $char : '-';
+        }
+
+        return $result;
     }
 
     /**

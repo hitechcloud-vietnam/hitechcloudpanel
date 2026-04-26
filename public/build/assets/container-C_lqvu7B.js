@@ -1,1 +1,0 @@
-import{j as n}from"./app-DqqMx5qu.js";import{c as r}from"./utils-CaQivgGP.js";function m({className:o,children:a}){return n.jsx("div",{className:r("mx-auto w-full !max-w-none space-y-5 px-4 py-5",o),children:a})}export{m as C};

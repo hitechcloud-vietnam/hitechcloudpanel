@@ -20,6 +20,7 @@ import {
   RocketIcon,
   Settings2Icon,
   SignpostIcon,
+  TerminalSquareIcon,
   UsersIcon,
 } from 'lucide-react';
 import { ReactNode, useEffect } from 'react';
@@ -194,6 +195,12 @@ export default function ServerLayout({ children }: { children: ReactNode }) {
       title: 'Monitoring',
       href: route('monitoring', { server: page.props.server.id }),
       icon: ChartLineIcon,
+      isDisabled: isMenuDisabled,
+    },
+    {
+      title: 'Terminal',
+      href: route('server-terminal', { server: page.props.server.id }),
+      icon: TerminalSquareIcon,
       isDisabled: isMenuDisabled,
     },
     {
