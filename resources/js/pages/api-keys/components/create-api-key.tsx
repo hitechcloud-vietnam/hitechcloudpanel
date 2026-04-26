@@ -88,8 +88,8 @@ export default function CreateApiKey({ children }: { children: ReactNode }) {
               </FormField>
               <FormField>
                 <Label htmlFor="permission">Permission</Label>
-                <Select id="permission" name="permission" value={form.data.permission} onValueChange={(value) => form.setData('permission', value)}>
-                  <SelectTrigger>
+                <Select name="permission" value={form.data.permission} onValueChange={(value) => form.setData('permission', value)}>
+                  <SelectTrigger id="permission">
                     <SelectValue placeholder="Select a permission" />
                   </SelectTrigger>
                   <SelectContent>

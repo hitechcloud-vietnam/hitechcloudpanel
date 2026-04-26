@@ -281,7 +281,7 @@ class ServicesTest extends TestCase
     {
         Http::fake([
             'https://api.github.com/repos/hitechcloud-vietnam/agent/releases/latest' => Http::response([
-                'tag_name' => '0.1.0',
+                'tag_name' => '0.1.5',
             ]),
         ]);
         SSH::fake('Active: active');

@@ -16,9 +16,9 @@ class InstallTest extends TestCase
 
     public function test_install_hitechcloudpanel_agent(): void
     {
-        SSH::fake('Active: active');
+        $sshFake = SSH::fake('Active: active');
         Http::fake([
-            'https://api.github.com/repos/hitechcloud-vietnam/agent/tags' => Http::response([['name' => '0.1.0']]),
+            'https://api.github.com/repos/hitechcloud-vietnam/agent/tags' => Http::response([['name' => '0.1.5']]),
         ]);
 
         $this->server->monitoring()?->delete();
@@ -33,9 +33,45 @@ class InstallTest extends TestCase
             'server_id' => $this->server->id,
             'name' => 'hitechcloudpanel-agent',
             'type' => 'monitoring',
-            'version' => '0.1.0',
+            'version' => '0.1.5',
             'status' => ServiceStatus::READY,
         ]);
+
+        $service = $this->server->fresh()->monitoring();
+
+        $this->assertNotNull($service);
+        $this->assertSame(route('api.servers.agent', [$this->server, $service->id]), $service->type_data['url']);
+        $this->assertNotEmpty($service->type_data['secret']);
+
+        $sshFake->assertExecutedContains('wget -O ./hitechcloudpanel-linux-');
+        $sshFake->assertExecutedContains('/etc/systemd/system/hitechcloudpanel-agent.service');
+        $sshFake->assertExecutedContains('/etc/hitechcloudpanel-agent/config.json');
+        $sshFake->assertExecutedContains((string) $service->type_data['url']);
+        $sshFake->assertExecutedContains((string) $service->type_data['secret']);
+    }
+
+    public function test_install_hitechcloudpanel_agent_stores_generated_endpoint_and_secret(): void
+    {
+        SSH::fake('Active: active');
+        Http::fake([
+            'https://api.github.com/repos/hitechcloud-vietnam/agent/tags' => Http::response([['name' => 'v0.1.5']]),
+        ]);
+
+        $this->server->monitoring()?->delete();
+
+        $service = app(Install::class)->install($this->server, [
+            'type' => 'monitoring',
+            'name' => 'hitechcloudpanel-agent',
+            'version' => 'latest',
+        ]);
+
+        $service->refresh();
+
+        $this->assertSame('v0.1.5', $service->version);
+        $this->assertSame(route('api.servers.agent', [$this->server, $service->id]), $service->type_data['url']);
+        $this->assertIsString($service->type_data['secret']);
+        $this->assertNotSame('', $service->type_data['secret']);
+        $this->assertSame(10, $service->type_data['data_retention']);
     }
 
     public function test_install_hitechcloudpanel_agent_failed(): void
