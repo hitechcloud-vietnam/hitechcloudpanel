@@ -26,8 +26,13 @@ MATCHING_TAGS=$(git tag | grep -E "$INCLUDE_PATTERN" | sort -V)
 NEW_RELEASE=$(echo "$MATCHING_TAGS" | tail -n 1)
 
 if [[ -z "$NEW_RELEASE" ]]; then
-  echo "❌ No matching tag found."
-  exit 1
+  echo "⚠️ No tag found, fallback to main branch..."
+  git checkout main
+  git pull origin main
+else
+  echo "Switching to tag: $NEW_RELEASE"
+  git checkout "$NEW_RELEASE"
+  git pull origin "$NEW_RELEASE"
 fi
 
 echo "Switching to tag: $NEW_RELEASE"
