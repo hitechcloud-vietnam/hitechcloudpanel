@@ -8,6 +8,9 @@ use App\Enums\LoadBalancerMethod;
 use App\Plugins\RegisterSiteFeature;
 use App\Plugins\RegisterSiteFeatureAction;
 use App\Plugins\RegisterSiteType;
+use App\SiteFeatures\Wordpress\InstallAutoLogin;
+use App\SiteFeatures\Wordpress\UninstallAutoLogin;
+use App\SiteFeatures\Wordpress\UpdateTimezone;
 use App\SiteFeatures\ModernDeployment\Configuration;
 use App\SiteFeatures\ModernDeployment\Disable;
 use App\SiteFeatures\ModernDeployment\Enable;
@@ -229,6 +232,26 @@ class SiteTypeServiceProvider extends ServiceProvider
                     ->text()
                     ->label('Database Password'),
             ]))
+            ->register();
+
+        RegisterSiteFeature::make(Wordpress::id(), 'wordpress-management')
+            ->label('WordPress Management')
+            ->description('Manage WordPress auto login and timezone settings')
+            ->register();
+
+        RegisterSiteFeatureAction::make(Wordpress::id(), 'wordpress-management', 'install-auto-login')
+            ->label('Install Auto Login')
+            ->handler(InstallAutoLogin::class)
+            ->register();
+
+        RegisterSiteFeatureAction::make(Wordpress::id(), 'wordpress-management', 'uninstall-auto-login')
+            ->label('Uninstall Auto Login')
+            ->handler(UninstallAutoLogin::class)
+            ->register();
+
+        RegisterSiteFeatureAction::make(Wordpress::id(), 'wordpress-management', 'update-timezone')
+            ->label('Update Timezone')
+            ->handler(UpdateTimezone::class)
             ->register();
     }
 }

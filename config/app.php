@@ -8,6 +8,7 @@ use App\Providers\NotificationChannelServiceProvider;
 use App\Providers\PluginsServiceProvider;
 use App\Providers\RouteServiceProvider;
 use App\Providers\ServerProviderServiceProvider;
+use App\Providers\ServerFeatureServiceProvider;
 use App\Providers\ServiceTypeServiceProvider;
 use App\Providers\SiteTypeServiceProvider;
 use App\Providers\SourceControlServiceProvider;
@@ -230,6 +231,7 @@ return [
         DemoServiceProvider::class,
         PluginsServiceProvider::class,
         SiteTypeServiceProvider::class,
+        ServerFeatureServiceProvider::class,
         ServerProviderServiceProvider::class,
         StorageProviderServiceProvider::class,
         SourceControlServiceProvider::class,
